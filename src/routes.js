@@ -171,6 +171,26 @@ const routes = [
     noCollapse: true,
     subRoute: false
   },
+  {
+    type: "collapse",
+    name: "Admin",
+    key: "admin",
+    route: "/wp-admin",
+    icon: <Document size="12px" />,
+    component:"",
+    noCollapse: true,
+    subRoute: false
+  },
+  {
+    type: "collapse",
+    name: "Dashboard Admin",
+    key: "dashboardAdmin",
+    route: "/wp-admin/dashboard",
+    icon: <Document size="12px" />,
+    component: "",
+    noCollapse: true,
+    subRoute: false
+  },
 ];
 
 export default routes;
