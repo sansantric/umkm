@@ -47,6 +47,8 @@ import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
 import Article from "layouts/article";
 import Campaign from "layouts/campaign";
+import Investing from "layouts/investing";
+import Simulation from "layouts/investing/Simulation.js";
 import Cart from "layouts/cart";
 
 
@@ -69,6 +71,7 @@ const routes = [
     icon: <Shop size="12px" />,
     component: <Dashboard />,
     noCollapse: true,
+    subRoute: false
   },
   {
     type: "collapse",
@@ -77,6 +80,25 @@ const routes = [
     route: "/campaign",
     component: <Campaign />,
     noCollapse: true,
+    subRoute: false
+  },
+  {
+    type: "collapse",
+    name: "Start Investing",
+    key: "start-investing",
+    route: "/start-investing",
+    component: <Investing />,
+    noCollapse: true,
+    subRoute: false
+  },
+  {
+    type: "collapse",
+    name: "simulation",
+    key: "simulation",
+    route: "/start-investing/simulation/:identifier",
+    component: <Simulation />,
+    noCollapse: true,
+    subRoute: true
   },
   {
     type: "collapse",
@@ -86,6 +108,7 @@ const routes = [
     icon: <CreditCard size="12px" />,
     component: <Billing />,
     noCollapse: true,
+    subRoute: false
   },
   {
     type: "collapse",
@@ -95,6 +118,7 @@ const routes = [
     // icon: <Article size="12px" />,
     component: <Article />,
     noCollapse: true,
+    subRoute: false
   },
   {
     type: "collapse",
@@ -104,6 +128,7 @@ const routes = [
     // icon: <Article size="12px" />,
     component: <Cart />,
     noCollapse: true,
+    subRoute: false
   },
   {
     type: "collapse",
@@ -113,6 +138,7 @@ const routes = [
     icon: <CreditCard size="12px" />,
     component: <Billing />,
     noCollapse: true,
+    subRoute: false
   },
   {
     type: "collapse",
@@ -122,8 +148,9 @@ const routes = [
     icon: <CreditCard size="12px" />,
     component: <Billing />,
     noCollapse: true,
+    subRoute: false
   },
-  { type: "title", title: "", key: "account-pages" },
+  { type: "title", title: "", key: "account-pages", subRoute: false },
   {
     type: "collapse",
     name: "Settings",
@@ -132,6 +159,7 @@ const routes = [
     icon: <CustomerSupport size="12px" />,
     component: <Profile />,
     noCollapse: true,
+    subRoute: false
   },
   {
     type: "collapse",
@@ -141,6 +169,7 @@ const routes = [
     icon: <Document size="12px" />,
     component: <SignOut />,
     noCollapse: true,
+    subRoute: false
   },
 ];
 

@@ -144,6 +144,8 @@ export default function App() {
     </SoftBox>
   );
 
+  let listRoutes = routes.filter((item) => (!item.subRoute) )
+
   return isLoggin ? (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -156,7 +158,7 @@ export default function App() {
           color={sidenavColor}
           brand={brand}
           brandName="UMKM Nama"
-          routes={routes}
+          routes={listRoutes}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
         />
