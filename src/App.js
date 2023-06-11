@@ -46,9 +46,6 @@ import createCache from "@emotion/cache";
 // Soft UI Dashboard React routes
 import routes from "routes";
 
-// Soft UI Dashboard React contexts
-import { useSoftUIController, setMiniSidenav, setOpenConfigurator, setIsLogin } from "context";
-
 // Images
 import brand from "assets/images/avatar.png";
 import Home from "layouts/home";
@@ -58,9 +55,12 @@ import SignUp from "layouts/authentication/sign-up";
 import SignIn from "layouts/authentication/sign-in";
 import Footer from "examples/Footer";
 
+import { useSelector, useDispatch } from "react-redux";
+
 export default function App() {
-  const [controller, dispatch] = useSoftUIController();
-  const { miniSidenav, direction, layout, openConfigurator, sidenavColor, isLoggin } = controller;
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
+  const { miniSidenav, direction, layout, openConfigurator, sidenavColor, isLoggin } = store;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
@@ -78,7 +78,8 @@ export default function App() {
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
     if (miniSidenav && !onMouseEnter) {
-      setMiniSidenav(dispatch, false);
+      // setMiniSidenav(dispatch, false);
+      dispatch({ type: "MINI_SIDENAV", value: false });
       setOnMouseEnter(true);
     }
   };
@@ -86,20 +87,23 @@ export default function App() {
   // Close sidenav when mouse leave mini sidenav
   const handleOnMouseLeave = () => {
     if (onMouseEnter) {
-      setMiniSidenav(dispatch, true);
+      // setMiniSidenav(dispatch, true);
+      dispatch({ type: "MINI_SIDENAV", value: true });
       setOnMouseEnter(false);
     }
   };
 
   // Change the openConfigurator state
-  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+  const handleConfiguratorOpen = () =>
+    dispatch({ type: "OPEN_CONFIGURATOR", value: !openConfigurator });
 
   // Setting the dir attribute for the body element
   useEffect(() => {
     document.body.setAttribute("dir", direction);
-    const login = localStorage.getItem('token')
-    if(login) {
-      setIsLogin(dispatch, login)
+    const login = localStorage.getItem("token");
+    if (login) {
+      // setIsLogin(dispatch, login);
+      dispatch({ type: "LOGIN", value: login })
     }
   }, [direction]);
 
@@ -146,7 +150,7 @@ export default function App() {
     </SoftBox>
   );
 
-  let listRoutes = routes.filter((item) => (!item.subRoute) )
+  let listRoutes = routes.filter((item) => !item.subRoute);
 
   return isLoggin ? (
     <ThemeProvider theme={theme}>
@@ -177,7 +181,7 @@ export default function App() {
       <Loading />
       <Alert />
       <ModalSucces />
-      <LoginAdmin/>
+      <LoginAdmin />
       <Footer />
     </ThemeProvider>
   ) : pathname === "/wp-admin/dashboard" ? (
@@ -189,7 +193,8 @@ export default function App() {
       <DashboardNavbar />
       <DashboardAdmin />
       <Footer />
-    </ThemeProvider>) : (
+    </ThemeProvider>
+  ) : (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Loading />

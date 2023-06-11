@@ -16,12 +16,6 @@ Coded by www.creative-tim.com
 // @mui material components
 import * as React from "react";
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  setLoading,
-  useSoftUIController,
-  setModalSignUp,
-  setModal,
-} from "context";
 import axios from "axios";
 
 import Grid from "@mui/material/Grid";
@@ -64,10 +58,12 @@ import { NavLink } from 'react-router-dom';
 import TextInput from "components/Text/TextInput";
 import Modal from '@mui/material/Modal';
 
+import { useSelector, useDispatch } from "react-redux";
 
 function Investing() {
-  const {identifier}          = useParams()
-  const [controller, dispatch] = useSoftUIController();
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
+  const {identifier} = useParams()
   const [data, setData] = React.useState([]);
   const [investmen, setInvestmen] = React.useState(0);
   const [untung, setUntung] = React.useState(0);
@@ -93,18 +89,18 @@ function Investing() {
       .request(config)
       .then((response) => {
         setUntung(response.data.message);
-        setLoading(dispatch, false);
+        dispatch({ type: "LOADING", value: false})
       })
       .catch((error) => {
-        setLoading(dispatch, false);
+        dispatch({ type: "LOADING", value: false})
         console.log(error);
       });
   };
 
   const handleSucces = () => {
-    setModal(dispatch, true);
+    dispatch({ type: "MODAL", value: true})
     setTimeout(() => {
-      setModal(dispatch, false);
+      dispatch({ type: "MODAL", value: false})
       navigate("/start-investing");
     }, 3000);
   };
@@ -123,10 +119,10 @@ function Investing() {
         .request(config)
         .then((response) => {
           setData(response.data.message);
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false})
         })
         .catch((error) => {
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false})
           console.log(error);
         });
     };

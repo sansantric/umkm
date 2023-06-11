@@ -6,10 +6,11 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import card from "assets/images/cardimg.png";
+import { useSelector, useDispatch } from "react-redux";
 
-import { useSoftUIController, setCart } from "context";
 export default function MediaCard() {
-    const [controller, dispatch] = useSoftUIController();
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
   return (
     <Card sx={{ maxWidth: 320, padding: "5px", boxShadow: "7px 5px 5px 0px rgba(0,0,0,0.4)" }}>
       <CardMedia
@@ -47,7 +48,7 @@ export default function MediaCard() {
           alignContent: "center",
         }}
       >
-        <Button size="medium" variant="contained" style={{ width: "80%" }} onClick={()=> setCart(dispatch, val)} >
+        <Button size="medium" variant="contained" style={{ width: "80%" }} onClick={()=> dispatch({ type: "CART", value: val })} >
           Mulai Investasi
         </Button>
       </CardActions>

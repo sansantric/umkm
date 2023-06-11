@@ -13,11 +13,12 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import Grid from "@mui/material/Grid";
 import { Button } from "@mui/material";
-import { useSoftUIController, setCart } from "context";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function CardRow(props) {
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
   const { posts } = props;
-  const [controller, dispatch] = useSoftUIController();
   let harga = posts.harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   return (
     <Card sx={{ display: "flex", padding: "20px", margin: "10px" }}>
@@ -44,7 +45,7 @@ export default function CardRow(props) {
               color="primary"
               size="large"
               style={{ borderRadius: "30px", width: "50%" }}
-              onClick={() => setCart(dispatch, posts.id)}
+              onClick={() => dispatch({ type: "CART", value: posts.id })}
             >
               Masukan Keranjang
             </Button>

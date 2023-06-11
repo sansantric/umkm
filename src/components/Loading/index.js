@@ -3,13 +3,14 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Modal from "@mui/material/Modal";
 
-import { useSoftUIController, setLoading } from "context";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function Loading() {
-    const [controller, dispatch] = useSoftUIController();
-    const { isLoading } = controller;
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
+    const { isLoading } = store;
     
-    const handleLoading = () => setLoading(dispatch, false);
+    const handleLoading = () => dispatch({ type: "LOADING", value: false });
   return (
     <Modal
       aria-labelledby="modal-modal-title"
