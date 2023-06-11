@@ -159,7 +159,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 </Badge>
               </IconButton>
               <IconButton onClick={() => navigate("/cart")}>
-                <Badge badgeContent={cart.length} color="primary">
+                <Badge badgeContent={cart.length === 0 ? 0 : cart.length} color="primary">
                   <ShoppingCartIcon color="action" fontSize="large" />
                 </Badge>
               </IconButton>
