@@ -87,6 +87,9 @@ export const mainReducer = (state = initialState, action) => {
     case "IMAGE": {
       return { ...state, image: action.value };
     }
+    case "RESET_CART": {
+      return { ...state, cart: []};
+    }
     case "RESET": {
       return { initialState };
     }

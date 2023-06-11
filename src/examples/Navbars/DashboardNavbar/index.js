@@ -157,7 +157,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 <ChatIcon color="action" fontSize="large" />
               </Badge>
               <IconButton onClick={() => navigate("/cart")}>
-                <Badge badgeContent={0} color="primary">
+                <Badge badgeContent={cart.length === 0 ? 0 : cart.length} color="primary">
                   <ShoppingCartIcon color="action" fontSize="large" />
                 </Badge>
               </IconButton>

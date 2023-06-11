@@ -100,6 +100,7 @@ function Cart() {
         setItems(response.data.data);
         dispatch({ type: "LOADING", value: false })
         dispatch({ type: "RIWAYAT", value: true })
+        dispatch({ type: "RESET_CART"})
         navigate("/article");
       })
       .catch((error) => {
