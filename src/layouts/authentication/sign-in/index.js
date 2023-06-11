@@ -50,22 +50,12 @@ import axios from "axios";
 import curved6 from "assets/images/curved-images/curved14.jpg";
 import loginImg from "assets/images/login.png";
 
-import {
-  useSoftUIController,
-  setModalSignUp,
-  setLoading,
-  setAlert,
-  setModal,
-  setStatus,
-  setMessage,
-  setLogin,
-  setIsLogin,
-  setUser
-} from "context";
+import { useSelector, useDispatch } from "react-redux";
 
 function SignIn() {
-  const [controller, dispatch] = useSoftUIController();
-  const { login } = controller;  
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
+  const { login } = store;  
   const navigate = useNavigate();
   const [agreement, setAgremment] = useState(true);
   const [userInfo, setUserinfo] = useState({
@@ -86,20 +76,20 @@ function SignIn() {
     });
 
   const handleSetAgremment = () => setAgremment(!agreement);
-  const handleClose = () => setLogin(dispatch, false)
+  const handleClose = () => dispatch({ type: "LOGIN", value: false })
   const handleSucces = () => {
-    setModal(dispatch, true);
+    dispatch({ type: "MODAL", value: true })
     setTimeout(() => {
-      setModal(dispatch, false);
+      dispatch({ type: "MODAL", value: false })
     }, 3000);
   };
   const handleSignUp = () => {
-    setLogin(dispatch, false)
-    setModalSignUp(dispatch, true)
+    dispatch({ type: "LOGIN", value: false })
+    dispatch({ type: "SIGNUP", value: true })
   };
 
   const handleSignIn = async () => {
-    setLoading(dispatch, true);
+    dispatch({ type: "LOADING", value: true})
     let data = JSON.stringify(userInfo);
     let config = {
       method: "post",
@@ -116,9 +106,9 @@ function SignIn() {
       .then((response) => {
         console.log(JSON.stringify(response.data));
         localStorage.setItem("token", response.data.token);
-        setUser(dispatch, response.data.user)
-        setLoading(dispatch, false);
-        setIsLogin(dispatch, true)
+        dispatch({ type: "USER", value: response.data.user })
+        dispatch({ type: "LOADING", value: false})
+        dispatch({ type: "ISLOGIN", value: true })
         handleClose()
         navigate("/home");
       })

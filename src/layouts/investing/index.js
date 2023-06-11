@@ -15,10 +15,6 @@ Coded by www.creative-tim.com
 
 // @mui material components
 import * as React from "react";
-import {
-  setLoading,
-  useSoftUIController,
-} from "context";
 import axios from "axios";
 import Card from "layouts/investing/components/Card";
 
@@ -55,13 +51,16 @@ import factory from "assets/images/factory.png";
 
 import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
 
 function Investing() {
-  const [controller, dispatch] = useSoftUIController();
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
   const [data, setData] = React.useState([]);
 
   React.useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async () => {      
+      dispatch({ type: "LOADING", value: true })
       let token = localStorage.getItem("token");
       let config = {
         method: "get",
@@ -74,10 +73,10 @@ function Investing() {
         .request(config)
         .then((response) => {
           setData(response.data.message);
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
         })
         .catch((error) => {
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
           console.log(error);
         });
     };

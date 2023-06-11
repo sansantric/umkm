@@ -27,12 +27,12 @@ import SoftTypography from "components/SoftTypography";
 // Custom styles for the SidenavCard
 import { card, cardContent, cardIconBox, cardIcon } from "examples/Sidenav/styles/sidenavCard";
 
-// Soft UI Dashboard React context
-import { useSoftUIController } from "context";
+import { useSelector, useDispatch } from "react-redux";
 
 function SidenavCard() {
-  const [controller] = useSoftUIController();
-  const { miniSidenav, sidenavColor } = controller;
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
+  const { miniSidenav, sidenavColor } = store;
 
   return (
     <Card sx={(theme) => card(theme, { miniSidenav })}>

@@ -6,18 +6,6 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import CardRow from "components/Card/CardRow.js";
 import axios from "axios";
-import {
-  useSoftUIController,
-  setModalSignUp,
-  setLoading,
-  setAlert,
-  setModal,
-  setStatus,
-  setMessage,
-  setLogin,
-  setIsLogin,
-  setUser,
-} from "context";
 import { Grid, Paper, TextField } from "@mui/material";
 import factory from "assets/images/factory.png";
 import TextArea from "components/Text/TextArea";
@@ -27,6 +15,7 @@ import CardCampaign from "components/Card/CardCampaign";
 
 import Dropdown from "components/Dropdown";
 import Button from "@mui/material/Button";
+import { useSelector, useDispatch } from "react-redux";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -62,10 +51,11 @@ function a11yProps(index) {
 }
 
 export default function BasicTabs() {
-  const [controller, dispatch] = useSoftUIController();
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
   const [value, setValue] = React.useState(0);
   const [post, setPost] = React.useState([]);
-  const { riwayat, image } = controller;
+  const { riwayat, image } = store;
   const [file, setFile] = React.useState([]);
   const inputFile = React.useRef(null);
 
@@ -138,7 +128,7 @@ export default function BasicTabs() {
     // fetch data
     const dataFetch = async () => {
       riwayat ? setValue(2) : setValue(0);
-      setLoading(dispatch, true);
+      dispatch({ type: "LOADING", value: true })
       let token = localStorage.getItem("token");
       let config = {
         method: "get",
@@ -152,10 +142,10 @@ export default function BasicTabs() {
         .then((response) => {
           console.log(JSON.stringify(response.data.data.data));
           setPost(response.data.data.data);
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
         })
         .catch((error) => {
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
           console.log(error);
         });
     };

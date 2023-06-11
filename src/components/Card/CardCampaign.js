@@ -6,18 +6,6 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import CardRow from "components/Card/CardRow.js";
 import axios from "axios";
-import {
-  useSoftUIController,
-  setModalSignUp,
-  setLoading,
-  setAlert,
-  setModal,
-  setStatus,
-  setMessage,
-  setLogin,
-  setIsLogin,
-  setUser,
-} from "context";
 import { Grid, Paper, TextField } from "@mui/material";
 import factory from "assets/images/factory.png";
 import TextArea from "components/Text/TextArea";
@@ -27,7 +15,6 @@ import Dropdown from "components/Dropdown";
 import Button from "@mui/material/Button";
 
 export default function CardCampaign() {
-  const [controller, dispatch] = useSoftUIController();
   return (
     <Paper style={{margin: "10px", boxShadow: "5px 5px 5px rgba(0,0,0,0.2)", borderRadius: "20px"}}>
       <Grid container>

@@ -49,14 +49,16 @@ import image7 from "assets/images/image7.png";
 import Box from "@mui/material/Box";
 import { Typography, TextField, Card, CardContent } from "@mui/material";
 import Button from "@mui/material/Button";
-import { useSoftUIController, setLoading, setModal, setModalType, setRiwayat } from "context";
 import CardRow from "components/Card/CardRow.js";
 import axios from "axios";
 
+import { useSelector, useDispatch } from "react-redux";
+
 function Cart() {
   const { size } = typography;
-  const [controller, dispatch] = useSoftUIController();
-  const { cart, user } = controller;
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
+  const { cart, user } = store;
   const [items, setItems] = React.useState([]);
   const [isCheckout, setIsCheckout] = React.useState(false);
   const [hp, setHp] = React.useState();
@@ -66,18 +68,9 @@ function Cart() {
   const handleCheckout = () => {
     setIsCheckout(!isCheckout);
   };
-  // const handleSelesai = () => {
-  //   setModalType(dispatch, 'checkout');
-  //   setModal(dispatch, true);
-  //   setTimeout(() => {
-  //     setModal(dispatch, false);
-  //     setRiwayat(dispatch, true)
-  //     navigate('/article')
-  //   }, 3000);
-  // };
 
   const handleSelesai = () => {
-    setLoading(dispatch, true);
+    dispatch({ type: "LOADING", value: true })
     let token = localStorage.getItem("token");
     let id = [];
     cart.map((item, i) => {
@@ -105,12 +98,12 @@ function Cart() {
       .request(config)
       .then((response) => {
         setItems(response.data.data);
-        setLoading(dispatch, false);
-        setRiwayat(dispatch, true);
+        dispatch({ type: "LOADING", value: false })
+        dispatch({ type: "RIWAYAT", value: true })
         navigate("/article");
       })
       .catch((error) => {
-        setLoading(dispatch, false);
+        dispatch({ type: "LOADING", value: false })
         console.log(error);
       });
   };
@@ -120,7 +113,7 @@ function Cart() {
   https: React.useEffect(() => {
     // fetch data
     const dataFetch = async () => {
-      setLoading(dispatch, true);
+      dispatch({ type: "LOADING", value: true })
       let token = localStorage.getItem("token");
       let data = JSON.stringify({
         id: cart,
@@ -139,11 +132,11 @@ function Cart() {
         .request(config)
         .then((response) => {
           setItems(response.data.data);
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
           console.log(JSON.stringify(response.data));
         })
         .catch((error) => {
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
           console.log(error);
         });
     };
