@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Input from '@mui/base/Input';
 import { styled } from '@mui/system';
+import PropTypes from "prop-types";
 
 const CustomInput = React.forwardRef(function CustomInput(props, ref) {
   return (
@@ -12,11 +13,17 @@ const CustomInput = React.forwardRef(function CustomInput(props, ref) {
   );
 });
 
-export default function InputMultiline() {
+export default function InputMultiline(props) {
+  const {handleChange} = props
   return (
-    <CustomInput aria-label="Demo input" multiline placeholder="Deskripsi Bisnis" />
+    <CustomInput aria-label="Demo input" multiline placeholder="Deskripsi Bisnis" onChange={handleChange} />
   );
 }
+
+
+InputMultiline.propTypes = {
+  handleChange: PropTypes.func,
+};
 
 const blue = {
   100: '#DAECFF',

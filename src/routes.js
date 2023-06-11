@@ -102,7 +102,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Investment Modals",
+    name: "Finance",
     key: "investment",
     route: "/investment",
     icon: <CreditCard size="12px" />,
@@ -128,7 +128,7 @@ const routes = [
     // icon: <Article size="12px" />,
     component: <Cart />,
     noCollapse: true,
-    subRoute: false
+    subRoute: true
   },
   {
     type: "collapse",
