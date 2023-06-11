@@ -16,13 +16,7 @@ Coded by www.creative-tim.com
 // @mui material components
 import * as React from "react";
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  setLoading,
-  useSoftUIController,
-  setModalSignUp,
-  setModal,
-  setModalType,
-} from "context";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 
 import Grid from "@mui/material/Grid";
@@ -120,8 +114,8 @@ const StyledTextarea = styled(TextareaAutosize)(
 );
 
 function DetailChat() {
-  const {identifier}          = useParams()
-  const [controller, dispatch] = useSoftUIController();
+  const dispatch = useDispatch();
+  const {identifier}          = useParams();
   const [data, setData] = React.useState([]);
   const [dataUser, setDataUser] = React.useState([]);
   const [subject, setSubject] = React.useState('');
@@ -147,31 +141,31 @@ function DetailChat() {
     axios
       .request(config)
       .then((response) => {
-        setLoading(dispatch, false);
+        dispatch({ type: "LOADING", value: false })
         if (response.data.message === 'chat sent!') handleSucces();          
         else handleFailed();          
       })
       .catch((error) => {
-        setLoading(dispatch, false);
+        dispatch({ type: "LOADING", value: false })
         handleFailed();
         console.log(error);
       });
   };
 
   const handleSucces = () => {
-    setModalType(dispatch, 'chatSuccess');
-    setModal(dispatch, true);
+    dispatch({ type: "MODALTYPE", value: 'chatSuccess' })
+    dispatch({ type: "MODAL", value: true })
     setTimeout(() => {
-      setModal(dispatch, false);
+      dispatch({ type: "MODAL", value: false })
       navigate("/list-chat");
     }, 3000);
   };
 
   const handleFailed = () => {
-    setModalType(dispatch, 'chatFailed');
-    setModal(dispatch, true);
+    dispatch({ type: "MODALTYPE", value: 'chatFailed' })
+    dispatch({ type: "MODAL", value: true })
     setTimeout(() => {
-      setModal(dispatch, false);
+      dispatch({ type: "MODAL", value: false })
     }, 3000);
   };
 
@@ -189,34 +183,13 @@ function DetailChat() {
         .request(config)
         .then((response) => {
           setData(response.data.message);
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
         })
         .catch((error) => {
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
           console.log(error);
         });
     };
-
-    // const getUseData = async () => {
-    //   let token = localStorage.getItem("token");
-    //   let config = {
-    //     method: "get",
-    //     url: `https://teman-umkm.website/api/admin/users/${identifier}`,
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   };
-    //   axios
-    //     .request(config)
-    //     .then((response) => {
-    //       setDataUser(response.data.message);
-    //       setLoading(dispatch, false);
-    //     })
-    //     .catch((error) => {
-    //       setLoading(dispatch, false);
-    //       console.log(error);
-    //     });
-    // }
 
     fetchData();
   }, []);
@@ -281,8 +254,9 @@ function DetailChat() {
                           alignItems="center"
                         > 
                           <TextInput 
+                            value={subject}
                             placeholder="Chat Subject" 
-                            width="900px  "
+                            width="900px"
                             style={{ marginBottom: "10px"}}
                             handleChange={(e) => (setSubject(e.target.value))} 
                           />

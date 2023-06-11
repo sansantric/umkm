@@ -16,13 +16,7 @@ Coded by www.creative-tim.com
 // @mui material components
 import * as React from "react";
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  setLoading,
-  useSoftUIController,
-  setModalSignUp,
-  setModal,
-  setModalType,
-} from "context";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 
 import Grid from "@mui/material/Grid";
@@ -66,6 +60,7 @@ import TextInput from "components/Text/TextInput";
 import Modal from '@mui/material/Modal';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 import { styled } from '@mui/system';
+import { TrendingUpOutlined } from "@mui/icons-material";
 
 const blue = {
   100: '#DAECFF',
@@ -120,8 +115,8 @@ const StyledTextarea = styled(TextareaAutosize)(
 );
 
 function Chat() {
+  const dispatch = useDispatch();
   const {identifier}          = useParams()
-  const [controller, dispatch] = useSoftUIController();
   const [data, setData] = React.useState([]);
   const [dataUser, setDataUser] = React.useState([]);
   const [subject, setSubject] = React.useState('');
@@ -130,6 +125,7 @@ function Chat() {
   const defaultImage = 'https://static.vecteezy.com/system/resources/previews/004/705/198/original/store-icon-design-symbol-market-retail-building-storefront-for-ecommerce-free-vector.jpg';
 
   const submit = (e) => {
+    dispatch({ type: "LOADING", value: true })
     let token = localStorage.getItem("token");
 
     let config = {
@@ -147,36 +143,37 @@ function Chat() {
     axios
       .request(config)
       .then((response) => {
-        setLoading(dispatch, false);
+        dispatch({ type: "LOADING", value: false })
         if (response.data.message === 'chat sent!') handleSucces();          
         else handleFailed();          
       })
       .catch((error) => {
-        setLoading(dispatch, false);
+        dispatch({ type: "LOADING", value: false })
         handleFailed();
         console.log(error);
       });
   };
 
   const handleSucces = () => {
-    setModalType(dispatch, 'chatSuccess');
-    setModal(dispatch, true);
+    dispatch({ type: "MODALTYPE", value: 'chatSuccess' })
+    dispatch({ type: "MODAL", value: true })
     setTimeout(() => {
-      setModal(dispatch, false);
+      dispatch({ type: "MODAL", value: false })
       navigate("/start-investing");
-    }, 3000);
+    }, 5000);
   };
 
   const handleFailed = () => {
-    setModalType(dispatch, 'chatFailed');
-    setModal(dispatch, true);
+    dispatch({ type: "MODALTYPE", value: 'chatFailed' })
+    dispatch({ type: "MODAL", value: true })
     setTimeout(() => {
-      setModal(dispatch, false);
-    }, 3000);
+      dispatch({ type: "MODAL", value: false })
+    }, 5000);
   };
 
   React.useEffect(() => {    
     const fetchData = async () => {
+      dispatch({ type: "LOADING", value: true })
       let token = localStorage.getItem("token");
       let config = {
         method: "get",
@@ -189,15 +186,16 @@ function Chat() {
         .request(config)
         .then((response) => {
           setData(response.data.message);
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
         })
         .catch((error) => {
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
           console.log(error);
         });
     };
 
     const getUseData = async () => {
+      dispatch({ type: "LOADING", value: true })
       let token = localStorage.getItem("token");
       let config = {
         method: "get",
@@ -210,10 +208,10 @@ function Chat() {
         .request(config)
         .then((response) => {
           setDataUser(response.data.message);
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
         })
         .catch((error) => {
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
           console.log(error);
         });
     }
@@ -279,6 +277,7 @@ function Chat() {
                             width="900px  "
                             style={{ marginBottom: "10px"}}
                             handleChange={(e) => (setSubject(e.target.value))} 
+                            value={subject}
                           />
                           <StyledTextarea 
                             placeholder="Chat Description" 

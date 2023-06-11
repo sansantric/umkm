@@ -13,12 +13,10 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import Grid from "@mui/material/Grid";
 import { Button } from "@mui/material";
-import { useSoftUIController, setCart } from "context";
 import { NavLink } from 'react-router-dom';
 
 export default function CardRow(props) {
   const { datas } = props;
-  const [controller, dispatch] = useSoftUIController();
 
   // let harga = datas.harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   let defaultImage = 'https://static.vecteezy.com/system/resources/previews/004/705/198/original/store-icon-design-symbol-market-retail-building-storefront-for-ecommerce-free-vector.jpg';

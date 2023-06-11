@@ -15,10 +15,7 @@ Coded by www.creative-tim.com
 
 // @mui material components
 import * as React from "react";
-import {
-  setLoading,
-  useSoftUIController,
-} from "context";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import Card from "layouts/listChat/components/Card";
 
@@ -57,12 +54,12 @@ import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
 
 function listChat() {
-  const [controller, dispatch] = useSoftUIController();
+  const dispatch = useDispatch();
   const [data, setData] = React.useState([]);
 
   React.useEffect(() => {
     const fetchData = async () => {
-      setLoading(dispatch, true);
+      dispatch({ type: "LOADING", value: true })
       let token = localStorage.getItem("token");
       let config = {
         method: "get",
@@ -75,10 +72,10 @@ function listChat() {
         .request(config)
         .then((response) => {
           setData(response.data.message);
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
         })
         .catch((error) => {
-          setLoading(dispatch, false);
+          dispatch({ type: "LOADING", value: false })
           console.log(error);
         });
     };
