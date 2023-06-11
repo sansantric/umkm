@@ -196,6 +196,7 @@ function Investing() {
                             type="number" 
                             width="500px" 
                             handleChange={(e) => (setInvestmen(e.target.value))} 
+                            value={investmen}
                           />
                           <Typography variant="h5" style={{ marginTop: "20px"}}>Estimasi Keuntungan</Typography>
                           <Typography variant="h5" style={{ marginBottom: "20px"}}>{untung === 0 ? '' : untung}</Typography>

@@ -181,7 +181,7 @@ export default function BasicTabs() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <Paper>
+        <Paper style={{borderRadius:"20px"}}>
           <Grid container>
             <Grid
               item

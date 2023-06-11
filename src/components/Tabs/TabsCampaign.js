@@ -229,6 +229,7 @@ export default function BasicTabs() {
                 placeholder="Nama Bisnis"
                 handleChange={(e) => setNamaBisnis(e.target.value)}
                 width="90%"
+                value={namaBisnis}
               />
               <Dropdown list={[{
                 value: 1,
@@ -239,13 +240,15 @@ export default function BasicTabs() {
               }]} />
               <TextInput
                 placeholder="Nominal Investasi"
-                handleChange={(e) => setNamaBisnis(e.target.value)}
+                handleChange={(e) => setNominalBisnis(e.target.value)}
                 width="90%"
+                value={nominalBisnis}
               />
               <TextInput
                 placeholder="Estimasi Keuntungan"
                 handleChange={(e) => setEstimasi(e.target.value)}
                 width="90%"
+                value={estimasi}
               />
               <TextArea width={"90%"} maxRows={5} handleChange={(e) => setDeskripsi(e.target.value)}/>
             </Grid>
