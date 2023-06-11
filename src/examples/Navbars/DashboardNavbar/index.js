@@ -178,7 +178,43 @@ function DashboardNavbar({ absolute, light, isMini }) {
               />
             </SoftBox>
           </SoftBox>
-        ) : (
+        ) : route[1] === "dashboard" ? (
+          
+          <SoftBox pr={1} >
+            <Button
+                variant="contained"
+                style={{
+                  backgroundColor: "#3D7EBB",
+                  margin: "10px",
+                  width: "40%",
+                  borderRadius: "50px",
+                }}
+              >
+                Dashboard
+            </Button>
+            <Button
+                variant="contained"
+                style={{
+                  backgroundColor: "#3D7EBB",
+                  margin: "10px",
+                  width: "40%",
+                  borderRadius: "50px",
+                }}
+              >
+                Logout
+            </Button>
+              {/* <img src={brand} alt="Soft UI Logo" width="30px" />
+              <SoftBox
+                width={"100%"}
+              >
+                <SoftTypography component="h6" variant="button" fontWeight="medium">
+                  Almas
+                </SoftTypography>
+              </SoftBox> */}
+          </SoftBox>
+        )
+        :  
+        (
           <SoftBox sx={(theme) => navbarRow(theme, { isMini })}>
             <SoftBox pr={1}>
               <Button variant="contained" color="primary" onClick={handleLogin}>

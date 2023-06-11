@@ -53,6 +53,7 @@ import Chat from "layouts/investing/Chat.js";
 import ListChat from "layouts/listChat";
 import DetailChat from "layouts/listChat/Detail.js";
 import Cart from "layouts/cart";
+import Finance from "layouts/finance";
 
 
 // Soft UI Dashboard React icons
@@ -132,11 +133,11 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Investment Modals",
+    name: "Finance",
     key: "investment",
     route: "/investment",
     icon: <CreditCard size="12px" />,
-    component: <Billing />,
+    component: <Finance />,
     noCollapse: true,
     subRoute: false
   },
@@ -158,7 +159,7 @@ const routes = [
     // icon: <Article size="12px" />,
     component: <Cart />,
     noCollapse: true,
-    subRoute: false
+    subRoute: true
   },
   {
     type: "collapse",
@@ -198,6 +199,26 @@ const routes = [
     route: "/sign-out",
     icon: <Document size="12px" />,
     component: <SignOut />,
+    noCollapse: true,
+    subRoute: false
+  },
+  {
+    type: "collapse",
+    name: "Admin",
+    key: "admin",
+    route: "/wp-admin",
+    icon: <Document size="12px" />,
+    component:"",
+    noCollapse: true,
+    subRoute: false
+  },
+  {
+    type: "collapse",
+    name: "Dashboard Admin",
+    key: "dashboardAdmin",
+    route: "/wp-admin/dashboard",
+    icon: <Document size="12px" />,
+    component: "",
     noCollapse: true,
     subRoute: false
   },

@@ -52,6 +52,8 @@ import { useSoftUIController, setMiniSidenav, setOpenConfigurator, setIsLogin } 
 // Images
 import brand from "assets/images/avatar.png";
 import Home from "layouts/home";
+import LoginAdmin from "layouts/admin/login";
+import DashboardAdmin from "layouts/admin/dashboard";
 import SignUp from "layouts/authentication/sign-up";
 import SignIn from "layouts/authentication/sign-in";
 import Footer from "examples/Footer";
@@ -169,7 +171,25 @@ export default function App() {
       </>
       <Footer />
     </ThemeProvider>
-  ) : (
+  ) : pathname === "/wp-admin" ? (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Loading />
+      <Alert />
+      <ModalSucces />
+      <LoginAdmin/>
+      <Footer />
+    </ThemeProvider>
+  ) : pathname === "/wp-admin/dashboard" ? (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Loading />
+      <Alert />
+      <ModalSucces />
+      <DashboardNavbar />
+      <DashboardAdmin />
+      <Footer />
+    </ThemeProvider>) : (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Loading />
