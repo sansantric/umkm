@@ -49,6 +49,9 @@ import Article from "layouts/article";
 import Campaign from "layouts/campaign";
 import Investing from "layouts/investing";
 import Simulation from "layouts/investing/Simulation.js";
+import Chat from "layouts/investing/Chat.js";
+import ListChat from "layouts/listChat";
+import DetailChat from "layouts/listChat/Detail.js";
 import Cart from "layouts/cart";
 
 
@@ -97,6 +100,33 @@ const routes = [
     key: "simulation",
     route: "/start-investing/simulation/:identifier",
     component: <Simulation />,
+    noCollapse: true,
+    subRoute: true
+  },
+  {
+    type: "collapse",
+    name: "chat",
+    key: "chat",
+    route: "/start-investing/chat/:identifier",
+    component: <Chat />,
+    noCollapse: true,
+    subRoute: true
+  },
+  {
+    type: "collapse",
+    name: "chat",
+    key: "chat",
+    route: "/list-chat",
+    component: <ListChat />,
+    noCollapse: true,
+    subRoute: true
+  },
+  {
+    type: "collapse",
+    name: "chat",
+    key: "chat",
+    route: "/chat/:identifier",
+    component: <DetailChat />,
     noCollapse: true,
     subRoute: true
   },

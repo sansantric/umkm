@@ -160,9 +160,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
         {isMini ? null : isLoggin ? (
           <SoftBox sx={(theme) => navbarRow(theme, { isMini })}>
             <SoftBox pr={1}>
-              <Badge color="primary">
-                <ChatIcon color="action" fontSize="large" />
-              </Badge>
+              <IconButton onClick={() => navigate("/list-chat")}>
+                <Badge color="primary">
+                  <ChatIcon color="action" fontSize="large" />
+                </Badge>
+              </IconButton>
               <IconButton onClick={() => navigate("/cart")}>
                 <Badge badgeContent={cart.length} color="primary">
                   <ShoppingCartIcon color="action" fontSize="large" />

@@ -24,11 +24,6 @@ export default function CardRow(props) {
   let defaultImage = 'https://static.vecteezy.com/system/resources/previews/004/705/198/original/store-icon-design-symbol-market-retail-building-storefront-for-ecommerce-free-vector.jpg';
   let image = datas.image === null ? defaultImage : datas.image;
 
-  const investing = (data) => {
-    localStorage.setItem("page-data", data);
-    localStorage.setItem("page-pointer", 1);
-  };
-
   return (
     <Card sx={{ display: "flex", padding: "20px", margin: "10px" }}>
       <Grid container>
@@ -82,7 +77,7 @@ export default function CardRow(props) {
               item 
               xs={12}
             >
-              <NavLink style={{ marginRight: "10px", width: "40%" }}>
+              <NavLink to={`/start-investing/chat/${datas.id}`} style={{ marginRight: "10px", width: "40%" }}>
                 <Button variant="contained" color="primary" style={{borderRadius: "30px", width: "100%"}}>Mulai Chat</Button>
               </NavLink>
               <NavLink to={`/start-investing/simulation/${datas.id}`} style={{ marginRight: "10px", width: "40%" }}> 

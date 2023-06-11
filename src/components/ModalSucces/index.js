@@ -3,6 +3,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Modal from "@mui/material/Modal";
 import success from "assets/images/success.png";
+import chatSuccess from "assets/images/chat_success.png";
+import chatFailed from "assets/images/chat_failed.png";
 import checkoutSuccess from "assets/images/checkoutSuccess.png";
 
 import { useSoftUIController, setModal } from "context";
@@ -15,9 +17,12 @@ export default function ModalSuccess() {
 
     const renderImage = () => {
       if (modalType == 'checkout') {
-        
         return <img src={checkoutSuccess} style={{height: '400px'}} />
-      } else {        
+      }else if (modalType == 'chatSuccess') {
+        return <img src={chatSuccess} style={{height: '400px'}} />
+      }else if (modalType == 'chatFailed') {
+        return <img src={chatFailed} style={{height: '400px'}} />
+      }else {        
         return <img src={success} style={{height: '400px'}} />
       }
     }

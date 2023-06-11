@@ -21,6 +21,7 @@ import {
   useSoftUIController,
   setModalSignUp,
   setModal,
+  setModalType,
 } from "context";
 import axios from "axios";
 
@@ -63,49 +64,114 @@ import { Button } from "@mui/material";
 import { NavLink } from 'react-router-dom';
 import TextInput from "components/Text/TextInput";
 import Modal from '@mui/material/Modal';
+import TextareaAutosize from '@mui/base/TextareaAutosize';
+import { styled } from '@mui/system';
 
+const blue = {
+  100: '#DAECFF',
+  200: '#b6daff',
+  400: '#3399FF',
+  500: '#007FFF',
+  600: '#0072E5',
+  900: '#003A75',
+};
 
-function Investing() {
+const grey = {
+  50: '#f6f8fa',
+  100: '#eaeef2',
+  200: '#d0d7de',
+  300: '#afb8c1',
+  400: '#8c959f',
+  500: '#6e7781',
+  600: '#57606a',
+  700: '#424a53',
+  800: '#32383f',
+  900: '#24292f',
+};
+
+const StyledTextarea = styled(TextareaAutosize)(
+  ({ theme }) => `
+  width: 320px;
+  font-family: IBM Plex Sans, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 12px;
+  border-radius: 12px;
+  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
+  border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
+  box-shadow: 0px 2px 2px ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
+
+  &:hover {
+    border-color: ${blue[400]};
+  }
+
+  &:focus {
+    border-color: ${blue[400]};
+    box-shadow: 0 0 0 3px ${theme.palette.mode === 'dark' ? blue[500] : blue[200]};
+  }
+
+  // firefox
+  &:focus-visible {
+    outline: 0;
+  }
+`,
+);
+
+function Chat() {
   const {identifier}          = useParams()
   const [controller, dispatch] = useSoftUIController();
   const [data, setData] = React.useState([]);
-  const [investmen, setInvestmen] = React.useState(0);
-  const [untung, setUntung] = React.useState(0);
+  const [dataUser, setDataUser] = React.useState([]);
+  const [subject, setSubject] = React.useState('');
+  const [message, setMessage] = React.useState('');
   let navigate = useNavigate();
   const defaultImage = 'https://static.vecteezy.com/system/resources/previews/004/705/198/original/store-icon-design-symbol-market-retail-building-storefront-for-ecommerce-free-vector.jpg';
 
-  const calculate = (e) => {
-    console.log('masuk');
+  const submit = (e) => {
     let token = localStorage.getItem("token");
 
     let config = {
       method: "post",
-      url: `https://teman-umkm.website/api/calculator/3`,
+      url: `https://teman-umkm.website/api/chats/${identifier}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       data: {
-        'nominal': investmen.toString(),
+        'subject': subject,
+        'description': message,
       },
     };
     axios
       .request(config)
       .then((response) => {
-        setUntung(response.data.message);
         setLoading(dispatch, false);
+        if (response.data.message === 'chat sent!') handleSucces();          
+        else handleFailed();          
       })
       .catch((error) => {
         setLoading(dispatch, false);
+        handleFailed();
         console.log(error);
       });
   };
 
   const handleSucces = () => {
+    setModalType(dispatch, 'chatSuccess');
     setModal(dispatch, true);
     setTimeout(() => {
       setModal(dispatch, false);
       navigate("/start-investing");
+    }, 3000);
+  };
+
+  const handleFailed = () => {
+    setModalType(dispatch, 'chatFailed');
+    setModal(dispatch, true);
+    setTimeout(() => {
+      setModal(dispatch, false);
     }, 3000);
   };
 
@@ -131,7 +197,29 @@ function Investing() {
         });
     };
 
+    const getUseData = async () => {
+      let token = localStorage.getItem("token");
+      let config = {
+        method: "get",
+        url: `https://teman-umkm.website/api/admin/users/${identifier}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      axios
+        .request(config)
+        .then((response) => {
+          setDataUser(response.data.message);
+          setLoading(dispatch, false);
+        })
+        .catch((error) => {
+          setLoading(dispatch, false);
+          console.log(error);
+        });
+    }
+
     fetchData();
+    getUseData();
   }, []);
 
   return (
@@ -140,71 +228,67 @@ function Investing() {
         <Grid container>
           <Box sx={{ width: "100%" }}>
             {
-              typeof data.image === 'undefined' ? 
+              typeof data.title === 'undefined' ? 
                 <> 
                   <Card sx={{ display: "flex", padding: "20px", margin: "10px" }}/>
                 </> :
                 <>
+                  <Grid 
+                    container 
+                    xs={12}
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Typography variant="h3">Form Chat</Typography>
+                  </Grid>
                   <Card sx={{ display: "flex", padding: "20px", margin: "10px" }}>
                     <Grid container>
-                      <Grid item xs={3}>
-                        <img src={ data.image??defaultImage} style={{width: '200px'}} />
-                      </Grid>
                       <Grid
                         container
-                        item
-                        xs={8}
+                        xs={12}
                         direction="row"
                         justifyContent="flex-start"
                         alignItems="flex-start"
-                      >
-                        <Grid
-                          container
-                          item
-                          direction="column"
-                          xs={12}
-                        >
-                          <Typography variant="h3">{data.title??'-'}</Typography>
-                          <Typography variant="caption" style={{ marginTop: "10px", marginBottom: "10px", fontWeight: "400"}}>{data.kategori??'-'}</Typography>
-                          <Typography variant="caption" style={{ marginTop: "10px", marginBottom: "30px"}}>{data.details??'-'}</Typography>
-                        </Grid>
-                      </Grid>
-                      <Grid 
-                        container
-                        item 
-                        xs={12}
-                      >
+                      > 
                         <Grid
                           container
                           item
                           xs={12}
                           direction="column"
                           justifyContent="flex-start"
+                          alignItems="flex-start"
+                        > 
+                          <Typography variant="h5" style={{ marginBottom: "10px" }}>To : {dataUser.nama}</Typography>
+                          <Typography variant="h2">{data.title??'-'}</Typography>
+                          <Typography variant="caption" style={{ marginTop: "10px", marginBottom: "10px", fontWeight: "400"}}>{data.kategori??'-'}</Typography>
+                          <Typography variant="caption" style={{ marginTop: "10px", marginBottom: "30px"}}>{data.details??'-'}</Typography>
+                          <Typography variant="caption" >Dana yang di Butuhkan :</Typography>
+                          <Typography variant="h5" style={{ marginBottom: "20px"}}>{`Rp. ${data.target_funds}` ?? '-'}</Typography>
+                        </Grid>
+                        <Grid
+                          container
+                          item
+                          xs={12}
+                          direction="column"
+                          justifyContent="center"
                           alignItems="center"
                         > 
-                          <Typography variant="caption" >Laba yang akan anda dapatkan :</Typography>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => setCart(dispatch, posts.id)}
-                            style={{ marginTop: "10px", marginBottom: "10px"}}
-                          >
-                            {`Rp. ${data.target_funds??'-'}/ Tahun`}
-                          </Button>
                           <TextInput 
-                            placeholder="Nominal Investasi" 
-                            type="number" 
-                            width="500px" 
-                            handleChange={(e) => (setInvestmen(e.target.value))} 
+                            placeholder="Chat Subject" 
+                            width="900px  "
+                            style={{ marginBottom: "10px"}}
+                            handleChange={(e) => (setSubject(e.target.value))} 
                           />
-                          <Typography variant="h5" style={{ marginTop: "20px"}}>Estimasi Keuntungan</Typography>
-                          <Typography variant="h5" style={{ marginBottom: "20px"}}>{untung === 0 ? '' : untung}</Typography>
-                          
-                          <NavLink style={{ marginTop: "10px", width: "40%" }}>
-                            <Button variant="contained" color="primary" style={{borderRadius: "30px", width: "100%"}} onClick={calculate}>Hitung</Button>
-                          </NavLink>
+                          <StyledTextarea 
+                            placeholder="Chat Description" 
+                            maxRows="10"
+                            minRows="5"
+                            style={{ width: "900px" }} 
+                            onChange={(e) => (setMessage(e.target.value))} 
+                          />
                           <NavLink style={{ marginTop: "10px", width: "70%" }}>
-                            <Button variant="contained" color="primary" style={{borderRadius: "30px", width: "100%"}} onClick={handleSucces}>Mulai Investasi</Button>
+                            <Button variant="contained" color="primary" style={{borderRadius: "30px", width: "100%"}} onClick={submit}>Request Chat</Button>
                           </NavLink>
                         </Grid>
                       </Grid>
@@ -219,4 +303,4 @@ function Investing() {
   );
 }
 
-export default Investing;
+export default Chat;
