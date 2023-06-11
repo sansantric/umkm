@@ -50,6 +50,7 @@ import Campaign from "layouts/campaign";
 import Investing from "layouts/investing";
 import Simulation from "layouts/investing/Simulation.js";
 import Cart from "layouts/cart";
+import Finance from "layouts/finance";
 
 
 // Soft UI Dashboard React icons
@@ -106,7 +107,7 @@ const routes = [
     key: "investment",
     route: "/investment",
     icon: <CreditCard size="12px" />,
-    component: <Billing />,
+    component: <Finance />,
     noCollapse: true,
     subRoute: false
   },

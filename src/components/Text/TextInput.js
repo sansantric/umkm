@@ -20,8 +20,8 @@ const CustomInput = React.forwardRef(function CustomInput(props, ref) {
 });
 
 export default function TextInput(props) {
-  const {handleChange, placeholder, type, width} = props
-  return <CustomInput aria-label="Demo input" placeholder={placeholder} onChange={(e) => handleChange(e)} type={type} style={{width: width}} />;
+  const {handleChange, placeholder, type, width, disable, value} = props
+  return <CustomInput aria-label="Demo input" placeholder={placeholder} onChange={(e) => handleChange(e)} type={type} style={{width: width}} disabled={disable} value={value} />;
 }
 
 const blue = {
@@ -76,12 +76,16 @@ const StyledInputElement = styled('input')(
 );
 
 TextInput.defaultProps = {
-  type: ""
+  type: "",
+  disable: false,
+  value: ""
 };
 
 TextInput.propTypes = {
   handleChange: PropTypes.func,
   placeholder: PropTypes.string,
   type: PropTypes.string,
-  width: PropTypes.string
+  width: PropTypes.string,
+  disable: PropTypes.bool,
+  value: PropTypes.string
 };

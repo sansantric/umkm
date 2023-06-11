@@ -20,7 +20,7 @@ import Icon from "@mui/material/Icon";
 // Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
-import TabsCampaign from "components/Tabs/TabsCampaign";
+import TabsFinance from "components/Tabs/TabsFinance";
 
 // Soft UI Dashboard React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -67,7 +67,7 @@ function Finance() {
             paddingTop="50px"
             paddingBottom="50px"
           >
-            <TabsCampaign />
+            <TabsFinance />
           </Grid>
           <Grid item xs={1} />
         </Grid>
