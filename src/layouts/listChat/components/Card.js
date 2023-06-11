@@ -26,7 +26,7 @@ export default function CardRow(props) {
 
   return (
     <NavLink to={`/chat/${datas.id}`} style={{ marginRight: "10px", width: "40%" }}> 
-      <Card sx={{ display: "flex", padding: "20px", margin: "10px" }}>
+      <Card sx={{ display: "flex", padding: "20px" }}>
         <Grid container>
           <Grid
             container
@@ -36,7 +36,7 @@ export default function CardRow(props) {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography variant="h5">{datas.sender.nama??'-'}</Typography>
+            <Typography variant="h5">{datas['0']??'-'}</Typography>
             <Typography variant="subtitle">{datas.date} {datas.time}</Typography>
           </Grid>
         </Grid>

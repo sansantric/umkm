@@ -62,6 +62,7 @@ function Investing() {
 
   React.useEffect(() => {
     const fetchData = async () => {
+      setLoading(dispatch, true);
       let token = localStorage.getItem("token");
       let config = {
         method: "get",

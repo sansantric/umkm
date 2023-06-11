@@ -62,6 +62,7 @@ function listChat() {
 
   React.useEffect(() => {
     const fetchData = async () => {
+      setLoading(dispatch, true);
       let token = localStorage.getItem("token");
       let config = {
         method: "get",
@@ -97,18 +98,30 @@ function listChat() {
                 direction="row"
                 justifyContent="center"
                 alignItems="center"
+                style={{ "marginBottom" : "150px" }}
               >
                 <Typography variant="h3">No Message</Typography>
               </Grid>
             :
-              <Box sx={{ width: "100%" }}>
-                { 
-                  data.length > 1 ? 
-                      data.map((items, i) => (<Card key={i} datas={items} />))
-                    :
-                      <Card datas={data} />
-                }
-              </Box>
+              <>
+                <Grid 
+                  container 
+                  xs={12}
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Typography variant="h3">Chat List</Typography>
+                </Grid>
+                <Box sx={{ width: "100%" }}>
+                  { 
+                    data.length > 1 ? 
+                        data.map((items, i) => (<Card key={i} datas={items} />))
+                      :
+                        <Card datas={data} />
+                  }
+                </Box>
+              </>
           }
         </Grid>
       </Box>
