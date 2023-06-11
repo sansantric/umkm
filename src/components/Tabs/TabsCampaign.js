@@ -23,6 +23,8 @@ import factory from "assets/images/factory.png";
 import TextArea from "components/Text/TextArea";
 import TextInput from "components/Text/TextInput";
 import FileInput from "components/Text/ButtonFIle";
+import CardCampaign from "components/Card/CardCampaign";
+
 import Dropdown from "components/Dropdown";
 import Button from "@mui/material/Button";
 
@@ -274,84 +276,8 @@ export default function BasicTabs() {
         </Paper>
       </TabPanel>
       <TabPanel value={value} index={1}>
-      <Paper>
-          <Grid container>
-            <Grid
-              item
-              xs={4}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <img
-                src={image}
-                style={{
-                  width: "90%",
-                  boxShadow: "5px 5px 5px rgba(0,0,0,0.5)",
-                  margin: "20px",
-                  borderRadius: "10px",
-                  border: "1px solid black",
-                }}
-              />
-              <FileInput />
-              {/* <strong>Uploaded Files:</strong> {console.log(file)}
-              <input type="file" 
-        onChange={handleFile} ref={inputFile} />
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: "#E2E3E4",
-                  color: "#000",
-                  margin: "10px",
-                  width: "80%",
-                  borderRadius: "50px",
-                }}
-                onClick={() => inputFile.current.click()}
-              >
-                Browse FIle
-              </Button> */}
-            </Grid>
-            <Grid item xs={8} style={{ width: "100%" }}>
-              <TextInput
-                placeholder="Nama Bisnis"
-                handleChange={(e) => setNamaBisnis(e.target.value)}
-                width="90%"
-              />
-              <Dropdown list={[{
-                value: 1,
-                name: "Bisnis A"
-              }, {
-                value: 2,
-                name: "Bisnis B"
-              }]} />
-              <TextInput
-                placeholder="Nominal Investasi"
-                handleChange={(e) => setNamaBisnis(e.target.value)}
-                width="90%"
-              />
-              <TextInput
-                placeholder="Estimasi Keuntungan"
-                handleChange={(e) => setEstimasi(e.target.value)}
-                width="90%"
-              />
-              <TextArea width={"90%"} maxRows={5} handleChange={(e) => setDeskripsi(e.target.value)}/>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-            </Grid>
-          </Grid>
-        </Paper>
+        <CardCampaign />
+        <CardCampaign />
       </TabPanel>
     </Box>
   );
