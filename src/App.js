@@ -60,6 +60,7 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  const [role, setRole] = useState([])
 
 
   // Open sidenav when mouse enter on mini sidenav
@@ -99,6 +100,11 @@ export default function App() {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
+  useEffect(() => {
+    if (user) {
+      setRole(user.tipe_akun)
+    }
+  }, []);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
@@ -106,7 +112,7 @@ export default function App() {
         return getRoutes(route.collapse);
       }
 
-      if (route.route && route.role.includes(user.tipe_akun)) {
+      if (route.route && role.includes(user.tipe_akun)) {
         return <Route exact path={route.route} element={route.component} key={route.key} />;
       }
 
