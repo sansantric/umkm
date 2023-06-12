@@ -221,8 +221,7 @@ const routes = [
     icon: <Document size="12px" />,
     component:"",
     noCollapse: true,
-    subRoute: false,
-    role: []
+    subRoute: true
   },
   {
     type: "collapse",
@@ -232,8 +231,7 @@ const routes = [
     icon: <Document size="12px" />,
     component: "",
     noCollapse: true,
-    subRoute: false,
-    role: []
+    subRoute: true
   },
 ];
 
