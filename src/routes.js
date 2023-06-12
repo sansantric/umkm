@@ -210,7 +210,7 @@ const routes = [
     icon: <Document size="12px" />,
     component:"",
     noCollapse: true,
-    subRoute: false
+    subRoute: true
   },
   {
     type: "collapse",
@@ -220,7 +220,7 @@ const routes = [
     icon: <Document size="12px" />,
     component: "",
     noCollapse: true,
-    subRoute: false
+    subRoute: true
   },
 ];
 
