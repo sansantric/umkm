@@ -25,8 +25,10 @@ import logo from "assets/images/logo.png";
 
 // Image
 import loginImg from "assets/images/login.png";
+import { useDispatch } from "react-redux";
 
 function Login() {
+    const dispatch = useDispatch();
     const [userInfo, setUserinfo] = useState({
         email: "",
         password: "",
@@ -36,24 +38,97 @@ function Login() {
         no_hp: "",
         alamat: "",
         email: "",
+        tipe_akun: "admin",
         password: "",
-      });
+    });
+    const [status, setStatus] = useState("login");
+    
     const handleNama = (val) => setUserinfoRegis({ ...userInfoRegis, nama: val });
     const handleHp = (val) => setUserinfoRegis({ ...userInfoRegis, no_hp: val });
     const handleAlamat = (val) => setUserinfoRegis({ ...userInfoRegis, alamat: val });
     const handleEmailRegis = (val) => setUserinfoRegis({ ...userInfoRegis, email: val });
     const handlePasswordRegis = (val) => setUserinfoRegis({ ...userInfoRegis, password: val });
-    const [status, setStatus] = useState("login")
+    const restUserInfoRegis = () =>
+        setUserinfo({
+            nama: "",
+            no_hp: "",
+            alamat: "",
+            email: "",
+            tipe_akun: "",
+            password: "",
+    });
 
     const handleEmail = (val) => setUserinfo({ ...userInfo, email: val });
     const handlePassword = (val) => setUserinfo({ ...userInfo, password: val });
+    const restUserInfo = () =>
+        setUserinfo({
+            email: "", 
+            password: "",
+        });
 
-    const handleSignUp = () => {
+    const statusSignUp = () => {
         setStatus("regis")
     }
-    const handleLogin = () => {
+    const statusSignIn = () => {
         setStatus("login")
     }
+
+    const handleSignIn = async () => {
+        dispatch({ type: "LOADING", value: true})
+        let data = JSON.stringify(userInfo);
+        let config = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: "https://teman-umkm.website/api/login",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            data: data,
+        };
+        console.debug(data);
+        axios
+            .request(config)
+            .then((response) => {
+                console.debug(JSON.stringify(response.data));
+                localStorage.setItem("token", response.data.token);
+                dispatch({ type: "USER", value: response.data.user })
+                restUserInfo();
+                dispatch({ type: "LOADING", value: false})
+                navigate("/wp-admin/dashboard");
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    const handleSignup = async () => {
+        dispatch({ type: "LOADING", value: true})
+        let data = JSON.stringify(userInfoRegis);
+        let config = {
+          method: "post",
+          maxBodyLength: Infinity,
+          url: "https://teman-umkm.website/api/register",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: data,
+        };
+        console.debug(data);
+        axios
+          .request(config)
+          .then((response) => {
+            console.debug(JSON.stringify(response.data));
+            restUserInfoRegis();
+            dispatch({ type: "LOADING", value: false})
+          })
+          .catch((error) => {
+            console.error(error);
+            dispatch({ type: "LOADING", value: false})
+            dispatch({ type: "ALERT", value: true });
+            dispatch({ type: "STATUS", value: "error" });
+            dispatch({ type: "MESSAGE", value: "Registrasi Failed" });
+          });
+      };
  
   return (
     <PageLayout>
@@ -99,11 +174,11 @@ function Login() {
                     <Button
                         variant="contained"
                         style={{ backgroundColor: "#E2E3E4", color: "#000", margin: "10px", width: "20%", marginBottom: "50px"}}
-                        // onClick={handleSignIn}
+                        onClick={handleSignIn}
                     >
                         Masuk
                     </Button>
-                    <Link href="#" style={{textDecoration: "underline", marginBottom: "20px", color: '#fff'}} onClick={handleSignUp} >Belum Memiliki Akun?</Link>
+                    <Link href="#" style={{textDecoration: "underline", marginBottom: "20px", color: '#fff'}} onClick={statusSignIn} >Belum Memiliki Akun?</Link>
                     </Box>
                 </Grid>
             </Grid> 
@@ -172,11 +247,11 @@ function Login() {
                 <Button
                     variant="contained"
                     style={{ backgroundColor: "#E2E3E4", color: "#000", margin: "20px", width: "20%"}}
-                    // onClick={handleSignup}
+                    onClick={handleSignup}
                 >
                     Daftar
                 </Button>
-                <Link href="#" style={{textDecoration: "underline", marginBottom: "20px", color: '#fff'}} onClick={handleLogin} >Sudah Punya Akun?</Link>
+                <Link href="#" style={{textDecoration: "underline", marginBottom: "20px", color: '#fff'}} onClick={statusSignUp} >Sudah Punya Akun?</Link>
                 </Box>
             </Grid>
             </Grid>
