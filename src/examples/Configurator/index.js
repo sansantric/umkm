@@ -33,19 +33,13 @@ import SoftButton from "components/SoftButton";
 
 // Custom styles for the Configurator
 import ConfiguratorRoot from "examples/Configurator/ConfiguratorRoot";
+import { useSelector, useDispatch } from "react-redux";
 
-// Soft UI Dashboard React context
-import {
-  useSoftUIController,
-  setOpenConfigurator,
-  setTransparentSidenav,
-  setFixedNavbar,
-  setSidenavColor,
-} from "context";
 
 function Configurator() {
-  const [controller, dispatch] = useSoftUIController();
-  const { openConfigurator, transparentSidenav, fixedNavbar, sidenavColor } = controller;
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
+  const { openConfigurator, transparentSidenav, fixedNavbar, sidenavColor } = store;
   const [disabled, setDisabled] = useState(false);
   const sidenavColors = ["primary", "dark", "info", "success", "warning", "error"];
 
@@ -66,10 +60,10 @@ function Configurator() {
     return () => window.removeEventListener("resize", handleDisabled);
   }, []);
 
-  const handleCloseConfigurator = () => setOpenConfigurator(dispatch, false);
-  const handleTransparentSidenav = () => setTransparentSidenav(dispatch, true);
-  const handleWhiteSidenav = () => setTransparentSidenav(dispatch, false);
-  const handleFixedNavbar = () => setFixedNavbar(dispatch, !fixedNavbar);
+  const handleCloseConfigurator = () => dispatch({ type: "OPEN_CONFIGURATOR", value:false });
+  const handleTransparentSidenav = () => dispatch({ type: "TRANSPARENT_SIDENAV", value: true });
+  const handleWhiteSidenav = () => dispatch({ type: "TRANSPARENT_SIDENAV", value: false });
+  const handleFixedNavbar = () => dispatch({ type: "FIXED_NAVBAR", value: !fixedNavbar });
 
   // sidenav type buttons styles
   const sidenavTypeButtonsStyles = ({
@@ -147,7 +141,7 @@ function Configurator() {
                     borderColor: dark.main,
                   },
                 })}
-                onClick={() => setSidenavColor(dispatch, color)}
+                onClick={() => dispatch({ type: "SIDENAV_COLOR", value: color })}
               />
             ))}
           </SoftBox>

@@ -24,15 +24,16 @@ import PropTypes from "prop-types";
 // Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
 
-// Soft UI Dashboard React context
-import { useSoftUIController, setLayout } from "context";
+import { useSelector, useDispatch } from "react-redux";
 
 function PageLayout({ background, children }) {
-  const [, dispatch] = useSoftUIController();
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
   const { pathname } = useLocation();
 
   useEffect(() => {
-    setLayout(dispatch, "page");
+    dispatch({ type: "LAYOUT", value: "page" })
+    // setLayout(dispatch, "page");
   }, [pathname]);
 
   return (

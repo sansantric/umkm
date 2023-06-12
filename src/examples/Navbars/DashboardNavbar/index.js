@@ -48,16 +48,6 @@ import {
   navbarMobileMenu,
 } from "examples/Navbars/DashboardNavbar/styles";
 
-// Soft UI Dashboard React context
-import {
-  useSoftUIController,
-  setTransparentNavbar,
-  setMiniSidenav,
-  setOpenConfigurator,
-  setIsLogin,
-  setModalSignUp,
-  setLogin,
-} from "context";
 
 // Images
 import team2 from "assets/images/team-2.jpg";
@@ -65,13 +55,15 @@ import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 import logo from "assets/images/logo.png";
 import Button from "@mui/material/Button";
 import Badge from "@mui/material/Badge";
+import { useSelector, useDispatch } from "react-redux";
 
 function DashboardNavbar({ absolute, light, isMini }) {
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
   const [navbarType, setNavbarType] = useState();
-  const [controller, dispatch] = useSoftUIController();
   const navigate = useNavigate();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, isLoggin, cart } =
-    controller;
+    store;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
 
@@ -85,7 +77,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
     // A function that sets the transparent state of the navbar.
     function handleTransparentNavbar() {
-      setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
+      dispatch({ type: "TRANSPARENT_NAVBAR", value: (fixedNavbar && window.scrollY === 0) || !fixedNavbar})
+      // setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
     }
 
     /** 
@@ -101,12 +94,12 @@ function DashboardNavbar({ absolute, light, isMini }) {
     return () => window.removeEventListener("scroll", handleTransparentNavbar);
   }, [dispatch, fixedNavbar]);
 
-  const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
-  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+  const handleMiniSidenav = () => dispatch({ type: "MINI_SIDENAV", value: !miniSidenav })
+  const handleConfiguratorOpen = () => dispatch({ type: "OPEN_CONFIGURATOR", value: !openConfigurator })
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
-  const handleSignup = () => setModalSignUp(dispatch, true);
-  const handleLogin = () => setLogin(dispatch, true);
+  const handleSignup = () => dispatch({ type: "SIGNUP", value: true });
+  const handleLogin = () => dispatch({ type: "LOGIN", value: true });
 
   const handleLogout = () => {
     navigate("/wp-admin");
@@ -165,11 +158,13 @@ function DashboardNavbar({ absolute, light, isMini }) {
         {isMini ? null : isLoggin ? (
           <SoftBox sx={(theme) => navbarRow(theme, { isMini })}>
             <SoftBox pr={1}>
-              <Badge color="primary">
-                <ChatIcon color="action" fontSize="large" />
-              </Badge>
+              <IconButton onClick={() => navigate("/list-chat")}>
+                <Badge color="primary">
+                  <ChatIcon color="action" fontSize="large" />
+                </Badge>
+              </IconButton>
               <IconButton onClick={() => navigate("/cart")}>
-                <Badge badgeContent={cart.length} color="primary">
+                <Badge badgeContent={cart.length === 0 ? 0 : cart.length} color="primary">
                   <ShoppingCartIcon color="action" fontSize="large" />
                 </Badge>
               </IconButton>

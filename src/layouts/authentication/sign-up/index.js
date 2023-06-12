@@ -44,25 +44,17 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import axios from "axios";
+import TextInput from "components/Text/TextInput";
 
 // Images
 import curved6 from "assets/images/curved-images/curved14.jpg";
 import undraw from "assets/images/undraw.png";
 
-import {
-  useSoftUIController,
-  setModalSignUp,
-  setLoading,
-  setAlert,
-  setModal,
-  setStatus,
-  setMessage,
-  setLogin,
-} from "context";
-
+import { useSelector, useDispatch } from "react-redux";
 function SignUp() {
-  const [controller, dispatch] = useSoftUIController();
-  const { isSignUp } = controller;
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
+  const { isSignUp } = store;
   const [agreement, setAgremment] = useState(true);
   const [userInfo, setUserinfo] = useState({
     nama: "",
@@ -90,20 +82,20 @@ function SignUp() {
     });
 
   const handleSetAgremment = () => setAgremment(!agreement);
-  const handleClose = () => setModalSignUp(dispatch, false);
+  const handleClose = () => dispatch({ type: "SIGNUP", value: false });
   const handleSucces = () => {
-    setModal(dispatch, true);
+    dispatch({ type: "MODAL", value: true });
     setTimeout(() => {
-      setModal(dispatch, false);
+      dispatch({ type: "MODAL", value: false });
     }, 3000);
   };
   const handleLogin = () => {
-    handleClose(dispatch, false)
-    setLogin(dispatch, true)
+    handleClose();
+    dispatch({ type: "LOGIN", value: true });
   };
 
   const handleSignup = async () => {
-    setLoading(dispatch, true);
+    dispatch({ type: "LOADING", value: true });
     let data = JSON.stringify(userInfo);
     let config = {
       method: "post",
@@ -121,15 +113,15 @@ function SignUp() {
         console.log(JSON.stringify(response.data));
         handleClose();
         restUserInfo();
-        setLoading(dispatch, false);
+        dispatch({ type: "LOADING", value: false });
         handleSucces();
       })
       .catch((error) => {
         console.log(error);
-        setLoading(dispatch, false);
-        setAlert(dispatch, true);
-        setMessage(dispatch, "Registrasi Failed");
-        setStatus(dispatch, "error");
+        dispatch({ type: "LOADING", value: true });
+        dispatch({ type: "ALERT", value: true });
+        dispatch({ type: "STATUS", value: "error" });
+        dispatch({ type: "MESSAGE", value: "Registrasi Failed" });
       });
   };
 
@@ -181,34 +173,29 @@ function SignUp() {
               <Typography variant="h3" style={{ color: "#ffffff", margin: "30px" }}>
                 Daftar
               </Typography>
-              <TextField
-                id="outlined-basic"
+              <TextInput
                 placeholder="Nama Lengkap"
-                variant="outlined"
-                style={{ width: "80%", margin: "10px" }}
-                onChange={(e) => handleNama(e.target.value)}
+                handleChange={(e) => handleNama(e.target.value)}
+                width="500px"
+                value={userInfo.nama}
               />
-              <TextField
-                id="outlined-basic"
+              <TextInput
                 placeholder="Nomor Telepon"
-                variant="outlined"
-                style={{ width: "80%", margin: "10px" }}
-                onChange={(e) => handleHp(e.target.value)}
+                handleChange={(e) => handleHp(e.target.value)}
+                width="500px"
+                value={userInfo.no_hp}
               />
-              <TextField
-                id="outlined-basic"
+              <TextInput
                 placeholder="Alamat Bisnis"
-                variant="outlined"
-                style={{ width: "80%", margin: "10px" }}
-                onChange={(e) => handleAlamat(e.target.value)}
+                handleChange={(e) => handleAlamat(e.target.value)}
+                width="500px"
+                value={userInfo.alamat}
               />
-              <TextField
-                id="outlined-basic"
+              <TextInput
                 placeholder="Email"
-                variant="outlined"
-                color="primary"
-                style={{ width: "80%", margin: "10px" }}
-                onChange={(e) => handleEmail(e.target.value)}
+                handleChange={(e) => handleEmail(e.target.value)}
+                width="500px"
+                value={userInfo.email}
               />
               <FormControl>
                 <RadioGroup
@@ -266,22 +253,28 @@ function SignUp() {
                   />
                 </RadioGroup>
               </FormControl>
-              <TextField
-                id="outlined-basic"
+              
+              <TextInput
                 placeholder="Password"
                 type="password"
-                variant="outlined"
-                style={{ width: "80%", margin: "10px" }}
-                onChange={(e) => handlePassword(e.target.value)}
+                handleChange={(e) => handlePassword(e.target.value)}
+                width="500px"
+                value={userInfo.password}
               />
               <Button
                 variant="contained"
-                style={{ backgroundColor: "#E2E3E4", color: "#000", margin: "20px", width: "80%"}}
+                style={{ backgroundColor: "#E2E3E4", color: "#000", margin: "20px", width: "80%" }}
                 onClick={handleSignup}
               >
                 Daftar
               </Button>
-              <Link href="#" style={{textDecoration: "underline", marginBottom: "20px", color: '#fff'}} onClick={handleLogin} >Sudah Punya Akun?</Link>
+              <Link
+                href="#"
+                style={{ textDecoration: "underline", marginBottom: "20px", color: "#fff" }}
+                onClick={handleLogin}
+              >
+                Sudah Punya Akun?
+              </Link>
             </Box>
           </Grid>
         </Grid>

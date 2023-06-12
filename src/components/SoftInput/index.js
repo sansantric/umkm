@@ -23,14 +23,14 @@ import SoftInputRoot from "components/SoftInput/SoftInputRoot";
 import SoftInputWithIconRoot from "components/SoftInput/SoftInputWithIconRoot";
 import SoftInputIconBoxRoot from "components/SoftInput/SoftInputIconBoxRoot";
 import SoftInputIconRoot from "components/SoftInput/SoftInputIconRoot";
+import { useSelector, useDispatch } from "react-redux";
 
-// Soft UI Dashboard React contexts
-import { useSoftUIController } from "context";
 
 const SoftInput = forwardRef(({ size, icon, error, success, disabled, ...rest }, ref) => {
   let template;
-  const [controller] = useSoftUIController();
-  const { direction } = controller;
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
+  const { direction } = store;
   const iconDirection = icon.direction;
 
   if (icon.component && icon.direction === "left") {

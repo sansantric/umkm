@@ -42,20 +42,20 @@ import OrderOverview from "layouts/rtl/components/OrderOverview";
 // Data
 import reportsBarChartData from "layouts/rtl/data/reportsBarChartData";
 import gradientLineChartData from "layouts/rtl/data/gradientLineChartData";
-
-// Soft UI Dashboard React contexts
-import { useSoftUIController, setDirection } from "context";
+import { useSelector, useDispatch } from "react-redux";
 
 function RTL() {
-  const [, dispatch] = useSoftUIController();
+  
+const dispatch = useDispatch();
+const store = useSelector((store) => store.mainReducer);
   const { size } = typography;
   const { chart, items } = reportsBarChartData;
 
   // Changing the direction to rtl
   useEffect(() => {
-    setDirection(dispatch, "rtl");
+    dispatch({ type: "DIRECTION", value: "rtl" })
 
-    return () => setDirection(dispatch, "ltr");
+    return () => dispatch({ type: "DIRECTION", value: "ltr" });
   }, []);
 
   return (

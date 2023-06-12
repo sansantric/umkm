@@ -15,8 +15,9 @@ Coded by www.creative-tim.com
 
 // @mui material components
 import * as React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import Card from "layouts/investing/components/Card";
+import Card from "layouts/listChat/components/Card";
 
 import Grid from "@mui/material/Grid";
 import Icon from "@mui/material/Icon";
@@ -51,20 +52,18 @@ import factory from "assets/images/factory.png";
 
 import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
 
-function Investing() {
+function listChat() {
   const dispatch = useDispatch();
-  const store = useSelector((store) => store.mainReducer);
   const [data, setData] = React.useState([]);
 
   React.useEffect(() => {
-    const fetchData = async () => {      
+    const fetchData = async () => {
       dispatch({ type: "LOADING", value: true })
       let token = localStorage.getItem("token");
       let config = {
         method: "get",
-        url: "https://teman-umkm.website/api/funds",
+        url: "https://teman-umkm.website/api/chats",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -88,17 +87,43 @@ function Investing() {
     <DashboardLayout>
       <Box sx={{ flexGrow: 1, margin: "30px" }}>
         <Grid container>
-          <Box sx={{ width: "100%" }}>
-            { 
-              data.map((items, i) => { 
-                return <Card key={i} datas={items} />
-                })
-            }
-          </Box>
+          {
+            data.length === 0 ? 
+              <Grid 
+                container 
+                xs={12}
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                style={{ "marginBottom" : "150px" }}
+              >
+                <Typography variant="h3">No Message</Typography>
+              </Grid>
+            :
+              <>
+                <Grid 
+                  container 
+                  xs={12}
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Typography variant="h3">Chat List</Typography>
+                </Grid>
+                <Box sx={{ width: "100%" }}>
+                  { 
+                    data.length > 1 ? 
+                        data.map((items, i) => (<Card key={i} datas={items} />))
+                      :
+                        <Card datas={data} />
+                  }
+                </Box>
+              </>
+          }
         </Grid>
       </Box>
     </DashboardLayout>
   );
 }
 
-export default Investing;
+export default listChat;

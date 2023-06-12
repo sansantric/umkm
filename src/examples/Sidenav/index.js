@@ -40,21 +40,23 @@ import SidenavCard from "examples/Sidenav/SidenavCard";
 import SidenavRoot from "examples/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
 
-// Soft UI Dashboard React context
-import { useSoftUIController, setMiniSidenav, setIsLogin } from "context";
 
+import { useSelector, useDispatch } from "react-redux";
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
-  const [controller, dispatch] = useSoftUIController();
-  const { miniSidenav, transparentSidenav, user } = controller;
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
+  const { miniSidenav, transparentSidenav, user } = store;
   const location = useLocation();
   const { pathname } = location;
   const collapseName = pathname.split("/").slice(1)[0];
 
-  const closeSidenav = () => setMiniSidenav(dispatch, true);
+  const closeSidenav = () => dispatch({ type: "MINI_SIDENAV", value: true });
 
   const handleClick = (key) => {
     if (key == "logout") {
-      setIsLogin(dispatch, false);
+      dispatch({ type: "ISLOGIN", value: false })
+      dispatch({ type: "RESET"})
+      // setIsLogin(dispatch, false);
       localStorage.removeItem("token");
     }
   };
@@ -62,7 +64,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   useEffect(() => {
     // A function that sets the mini state of the sidenav.
     function handleMiniSidenav() {
-      setMiniSidenav(dispatch, window.innerWidth < 1200);
+      dispatch({ type: "MINI_SIDENAV", value: window.innerWidth < 1200 })
     }
 
     /** 

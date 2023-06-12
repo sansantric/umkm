@@ -13,21 +13,17 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import Grid from "@mui/material/Grid";
 import { Button } from "@mui/material";
-import { useSoftUIController, setCart } from "context";
 import { NavLink } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
 
 export default function CardRow(props) {
   const { datas } = props;
-  const [controller, dispatch] = useSoftUIController();
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
 
   // let harga = datas.harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   let defaultImage = 'https://static.vecteezy.com/system/resources/previews/004/705/198/original/store-icon-design-symbol-market-retail-building-storefront-for-ecommerce-free-vector.jpg';
   let image = datas.image === null ? defaultImage : datas.image;
-
-  const investing = (data) => {
-    localStorage.setItem("page-data", data);
-    localStorage.setItem("page-pointer", 1);
-  };
 
   return (
     <Card sx={{ display: "flex", padding: "20px", margin: "10px" }}>
@@ -70,7 +66,7 @@ export default function CardRow(props) {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => setCart(dispatch, posts.id)}
+                onClick={() => dispatch({ type: "CART", value: post.id })}
                 style={{ marginTop: "10px"}}
               >
                 {`Rp. ${datas.target_funds}/ Tahun`}
@@ -82,7 +78,7 @@ export default function CardRow(props) {
               item 
               xs={12}
             >
-              <NavLink style={{ marginRight: "10px", width: "40%" }}>
+              <NavLink to={`/start-investing/chat/${datas.id}`} style={{ marginRight: "10px", width: "40%" }}>
                 <Button variant="contained" color="primary" style={{borderRadius: "30px", width: "100%"}}>Mulai Chat</Button>
               </NavLink>
               <NavLink to={`/start-investing/simulation/${datas.id}`} style={{ marginRight: "10px", width: "40%" }}> 

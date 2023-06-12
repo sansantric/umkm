@@ -1,19 +1,20 @@
 import { useState, useRef } from "react";
-import { useSoftUIController, setImage } from "context";
 import Button from "@mui/material/Button";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function FileInput() {
   // FIles States
+  const dispatch = useDispatch();
+  const store = useSelector((store) => store.mainReducer);
   const [imagePreview, setImagePreview] = useState(null);
   const [videoPreview, setVideoPreview] = useState(null);
-  const [controller, dispatch] = useSoftUIController();
 
   // FIle Picker Ref because we are not useing the standard File picker input
   const filePicekerRef = useRef(null);
 
   function previewFile(e) {
     // Reading New File (open file Picker Box)
-	  console.log('1',e.target.files[0]);
+    console.log("1", e.target.files[0]);
     const reader = new FileReader();
 
     // Gettting Selected File (user can select multiple but we are choosing only one)
@@ -25,8 +26,8 @@ export default function FileInput() {
     // As the File loaded then set the stage as per the file type
     reader.onload = (readerEvent) => {
       if (selectedFile.type.includes("image")) {
-		console.log(readerEvent.target.result)
-        setImage(dispatch, readerEvent.target.result);
+        console.log(readerEvent.target.result);
+        dispatch({ type: "IMAGE", value: readerEvent.target.result });
         setImagePreview(readerEvent.target.result);
       } else if (selectedFile.type.includes("video")) {
         setVideoPreview(readerEvent.target.result);
