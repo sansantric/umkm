@@ -25,14 +25,10 @@ import logo from "assets/images/logo.png";
 
 // Image
 import loginImg from "assets/images/login.png";
-
-import {
-    useSoftUIController,
-    setLoading,
-  } from "context";
+import { useDispatch } from "react-redux";
 
 function Login() {
-    const [controller, dispatch] = useSoftUIController();
+    const dispatch = useDispatch();
     const [userInfo, setUserinfo] = useState({
         email: "",
         password: "",
@@ -78,7 +74,7 @@ function Login() {
     }
 
     const handleSignIn = async () => {
-        setLoading(dispatch, true);
+        dispatch({ type: "LOADING", value: true})
         let data = JSON.stringify(userInfo);
         let config = {
             method: "post",
@@ -95,9 +91,9 @@ function Login() {
             .then((response) => {
                 console.debug(JSON.stringify(response.data));
                 localStorage.setItem("token", response.data.token);
-                setUser(dispatch, response.data.user)
+                dispatch({ type: "USER", value: response.data.user })
                 restUserInfo();
-                setLoading(dispatch, false);
+                dispatch({ type: "LOADING", value: false})
                 navigate("/wp-admin/dashboard");
             })
             .catch((error) => {
@@ -106,7 +102,7 @@ function Login() {
     }
 
     const handleSignup = async () => {
-        setLoading(dispatch, true);
+        dispatch({ type: "LOADING", value: true})
         let data = JSON.stringify(userInfoRegis);
         let config = {
           method: "post",
@@ -123,14 +119,14 @@ function Login() {
           .then((response) => {
             console.debug(JSON.stringify(response.data));
             restUserInfoRegis();
-            setLoading(dispatch, false);
+            dispatch({ type: "LOADING", value: false})
           })
           .catch((error) => {
             console.error(error);
-            setLoading(dispatch, false);
-            setAlert(dispatch, true);
-            setMessage(dispatch, "Registrasi Failed");
-            setStatus(dispatch, "error");
+            dispatch({ type: "LOADING", value: false})
+            dispatch({ type: "ALERT", value: true });
+            dispatch({ type: "STATUS", value: "error" });
+            dispatch({ type: "MESSAGE", value: "Registrasi Failed" });
           });
       };
  
