@@ -166,9 +166,9 @@ function Login() {
                         <Typography variant="h3" style={{ color: "#ffffff", margin: "30px" }}>
                         Login Admin
                     </Typography>
-                    <TextInput placeholder="Email" handleChange={(e) => handleEmail(e.target.value)} width="500px" 
+                    <TextInput placeholder="Email" handleChange={(e) => handleEmail(e.target.value)} width="100%" 
                 value={userInfo.email}/>
-                    <TextInput placeholder="Password" handleChange={(e) => handlePassword(e.target.value)} type="password" width="500px" 
+                    <TextInput placeholder="Password" handleChange={(e) => handlePassword(e.target.value)} type="password" width="100%" 
                 value={userInfo.password}/>
                     
                     <Button

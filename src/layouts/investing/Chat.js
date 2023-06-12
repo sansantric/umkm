@@ -274,7 +274,7 @@ function Chat() {
                         > 
                           <TextInput 
                             placeholder="Chat Subject" 
-                            width="900px  "
+                            width="100%"
                             style={{ marginBottom: "10px"}}
                             handleChange={(e) => (setSubject(e.target.value))} 
                             value={subject}

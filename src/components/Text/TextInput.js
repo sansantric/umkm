@@ -13,7 +13,7 @@ const CustomInput = React.forwardRef(function CustomInput(props, ref) {
   inputProps.ref = useForkRef(inputProps.ref, ref);
 
   return (
-    <div {...getRootProps()}>
+    <div {...getRootProps()} style={{width:"100%"}}>
       <StyledInputElement {...props} {...inputProps} />
     </div>
   );

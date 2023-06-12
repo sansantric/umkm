@@ -162,14 +162,15 @@ function SignIn() {
                 justifyContent: "center",
                 alignItems: "center",
                 alignContent: "center",
+                width:"100%"
               }}
             >
               <Typography variant="h3" style={{ color: "#ffffff", margin: "30px" }}>
                 Masuk
               </Typography>
-              <TextInput placeholder="Email" handleChange={(e) => handleEmail(e.target.value)} width="500px" 
+              <TextInput placeholder="Email" handleChange={(e) => handleEmail(e.target.value)} width="100%" 
                 value={userInfo.email}/>
-              <TextInput placeholder="Password" handleChange={(e) => handlePassword(e.target.value)} type="password" width="500px" 
+              <TextInput placeholder="Password" handleChange={(e) => handlePassword(e.target.value)} type="password" width="100%" 
                 value={userInfo.password} />
               
               <Link href="#" style={{textDecoration: "underline", color: '#fff', fontSize: '17px', fontWeight: '400'}} >Forgot Password?</Link>

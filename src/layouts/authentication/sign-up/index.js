@@ -176,25 +176,25 @@ function SignUp() {
               <TextInput
                 placeholder="Nama Lengkap"
                 handleChange={(e) => handleNama(e.target.value)}
-                width="500px"
+                width="100%"
                 value={userInfo.nama}
               />
               <TextInput
                 placeholder="Nomor Telepon"
                 handleChange={(e) => handleHp(e.target.value)}
-                width="500px"
+                width="100%"
                 value={userInfo.no_hp}
               />
               <TextInput
                 placeholder="Alamat Bisnis"
                 handleChange={(e) => handleAlamat(e.target.value)}
-                width="500px"
+                width="100%"
                 value={userInfo.alamat}
               />
               <TextInput
                 placeholder="Email"
                 handleChange={(e) => handleEmail(e.target.value)}
-                width="500px"
+                width="100%"
                 value={userInfo.email}
               />
               <FormControl>
@@ -258,7 +258,7 @@ function SignUp() {
                 placeholder="Password"
                 type="password"
                 handleChange={(e) => handlePassword(e.target.value)}
-                width="500px"
+                width="100%"
                 value={userInfo.password}
               />
               <Button
