@@ -56,7 +56,7 @@ import { useSelector, useDispatch } from "react-redux";
 export default function App() {
   const dispatch = useDispatch();
   const store = useSelector((store) => store.mainReducer);
-  const { miniSidenav, direction, layout, openConfigurator, sidenavColor, isLoggin } = store;
+  const { miniSidenav, direction, layout, openConfigurator, sidenavColor, isLoggin, user } = store;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
@@ -106,7 +106,7 @@ export default function App() {
         return getRoutes(route.collapse);
       }
 
-      if (route.route) {
+      if (route.route && route.role.includes(user.tipe_akun)) {
         return <Route exact path={route.route} element={route.component} key={route.key} />;
       }
 

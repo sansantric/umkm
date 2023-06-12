@@ -1,26 +1,26 @@
 const initialState = {
-    miniSidenav: false,
-    transparentSidenav: false,
-    sidenavColor: "info",
-    transparentNavbar: false,
-    fixedNavbar: true,
-    openConfigurator: false,
-    direction: "ltr",
-    layout: "dashboard",
-    isLoggin: false,
-    isSignUp: false,
-    isLoading: false,
-    isAlert: false,
-    isModal: false,
-    status: '',
-    message: '',
-    login: false,
-    user: {},
-    cart: [],
-    modalType: "",
-    riwayat: "",
-    image: ""
-  };
+  miniSidenav: false,
+  transparentSidenav: false,
+  sidenavColor: "info",
+  transparentNavbar: false,
+  fixedNavbar: true,
+  openConfigurator: false,
+  direction: "ltr",
+  layout: "dashboard",
+  isLoggin: false,
+  isSignUp: false,
+  isLoading: false,
+  isAlert: false,
+  isModal: false,
+  status: "",
+  message: "",
+  login: false,
+  user: {},
+  cart: [],
+  modalType: "",
+  riwayat: "",
+  image: "",
+};
 
 export const mainReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -88,12 +88,12 @@ export const mainReducer = (state = initialState, action) => {
       return { ...state, image: action.value };
     }
     case "RESET_CART": {
-      return { ...state, cart: []};
+      return { ...state, cart: [] };
     }
     case "RESET": {
       return { initialState };
     }
     default:
-      return initialState; // return default state
+      return state; // return default state
   }
 };

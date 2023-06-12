@@ -75,7 +75,8 @@ const routes = [
     icon: <Shop size="12px" />,
     component: <Dashboard />,
     noCollapse: true,
-    subRoute: false
+    subRoute: false,
+    role: ["UMKM", "Investor"]
   },
   {
     type: "collapse",
@@ -84,7 +85,8 @@ const routes = [
     route: "/campaign",
     component: <Campaign />,
     noCollapse: true,
-    subRoute: false
+    subRoute: false,    
+    role: ["UMKM"]
   },
   {
     type: "collapse",
@@ -93,7 +95,8 @@ const routes = [
     route: "/start-investing",
     component: <Investing />,
     noCollapse: true,
-    subRoute: false
+    subRoute: false,
+    role: ["Investor"]
   },
   {
     type: "collapse",
@@ -102,7 +105,8 @@ const routes = [
     route: "/start-investing/simulation/:identifier",
     component: <Simulation />,
     noCollapse: true,
-    subRoute: true
+    subRoute: true,
+    role: ["UMKM", "Investor"]
   },
   {
     type: "collapse",
@@ -111,7 +115,8 @@ const routes = [
     route: "/start-investing/chat/:identifier",
     component: <Chat />,
     noCollapse: true,
-    subRoute: true
+    subRoute: true,
+    role: ["UMKM", "Investor"]
   },
   {
     type: "collapse",
@@ -120,7 +125,8 @@ const routes = [
     route: "/list-chat",
     component: <ListChat />,
     noCollapse: true,
-    subRoute: true
+    subRoute: true,
+    role: ["UMKM", "Investor"]
   },
   {
     type: "collapse",
@@ -129,7 +135,8 @@ const routes = [
     route: "/chat/:identifier",
     component: <DetailChat />,
     noCollapse: true,
-    subRoute: true
+    subRoute: true,
+    role: ["UMKM", "Investor"]
   },
   {
     type: "collapse",
@@ -139,7 +146,8 @@ const routes = [
     icon: <CreditCard size="12px" />,
     component: <Finance />,
     noCollapse: true,
-    subRoute: false
+    subRoute: false,
+    role: ["UMKM", "Investor"]
   },
   {
     type: "collapse",
@@ -149,7 +157,8 @@ const routes = [
     // icon: <Article size="12px" />,
     component: <Article />,
     noCollapse: true,
-    subRoute: false
+    subRoute: false,
+    role: ["UMKM", "Investor"]
   },
   {
     type: "collapse",
@@ -159,39 +168,40 @@ const routes = [
     // icon: <Article size="12px" />,
     component: <Cart />,
     noCollapse: true,
-    subRoute: true
+    subRoute: true,
+    role: ["UMKM", "Investor"]
   },
-  {
-    type: "collapse",
-    name: "About Us",
-    key: "about",
-    route: "/about",
-    icon: <CreditCard size="12px" />,
-    component: <Billing />,
-    noCollapse: true,
-    subRoute: false
-  },
-  {
-    type: "collapse",
-    name: "Contact Us",
-    key: "contact",
-    route: "/contact",
-    icon: <CreditCard size="12px" />,
-    component: <Billing />,
-    noCollapse: true,
-    subRoute: false
-  },
+  // {
+  //   type: "collapse",
+  //   name: "About Us",
+  //   key: "about",
+  //   route: "/about",
+  //   icon: <CreditCard size="12px" />,
+  //   component: <Billing />,
+  //   noCollapse: true,
+  //   subRoute: false
+  // },
+  // {
+  //   type: "collapse",
+  //   name: "Contact Us",
+  //   key: "contact",
+  //   route: "/contact",
+  //   icon: <CreditCard size="12px" />,
+  //   component: <Billing />,
+  //   noCollapse: true,
+  //   subRoute: false
+  // },
   { type: "title", title: "", key: "account-pages", subRoute: false },
-  {
-    type: "collapse",
-    name: "Settings",
-    key: "settings",
-    route: "/settings",
-    icon: <CustomerSupport size="12px" />,
-    component: <Profile />,
-    noCollapse: true,
-    subRoute: false
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Settings",
+  //   key: "settings",
+  //   route: "/settings",
+  //   icon: <CustomerSupport size="12px" />,
+  //   component: <Profile />,
+  //   noCollapse: true,
+  //   subRoute: false
+  // },
   {
     type: "collapse",
     name: "Log Out",
@@ -200,7 +210,8 @@ const routes = [
     icon: <Document size="12px" />,
     component: <SignOut />,
     noCollapse: true,
-    subRoute: false
+    subRoute: false,
+    role: ["UMKM", "Investor"]
   },
   {
     type: "collapse",
@@ -210,7 +221,8 @@ const routes = [
     icon: <Document size="12px" />,
     component:"",
     noCollapse: true,
-    subRoute: false
+    subRoute: false,
+    role: []
   },
   {
     type: "collapse",
@@ -220,7 +232,8 @@ const routes = [
     icon: <Document size="12px" />,
     component: "",
     noCollapse: true,
-    subRoute: false
+    subRoute: false,
+    role: []
   },
 ];
 
