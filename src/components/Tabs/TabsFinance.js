@@ -55,7 +55,7 @@ export default function BasicTabs() {
   const store = useSelector((store) => store.mainReducer);
   const [value, setValue] = React.useState(0);
   const [post, setPost] = React.useState([]);
-  const { riwayat, image } = store;
+  const { riwayat, image, user } = store;
   const [file, setFile] = React.useState([]);
   const inputFile = React.useRef(null);
 
@@ -125,31 +125,8 @@ export default function BasicTabs() {
       });
   };
   React.useEffect(() => {
+    console.log("USER", user)
     // fetch data
-    const dataFetch = async () => {
-      riwayat ? setValue(2) : setValue(0);
-      dispatch({ type: "LOADING", value: true })
-      let token = localStorage.getItem("token");
-      let config = {
-        method: "get",
-        url: "https://teman-umkm.website/api/showPost",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      axios
-        .request(config)
-        .then((response) => {
-          console.log(JSON.stringify(response.data.data.data));
-          setPost(response.data.data.data);
-          dispatch({ type: "LOADING", value: false })
-        })
-        .catch((error) => {
-          dispatch({ type: "LOADING", value: false })
-          console.log(error);
-        });
-    };
-    dataFetch();
   }, []);
   return (
     <Box sx={{ width: "100%" }}>
@@ -166,7 +143,7 @@ export default function BasicTabs() {
             },
           }}
         >
-          <Tab label="Pencairan Modal" {...a11yProps(0)} />
+          <Tab label={user.tipe_akun == "UMKM" ? "Pencairan Modal" : "Pencairan Profit"} {...a11yProps(0)} />
           <Tab label="Status" {...a11yProps(1)} />
         </Tabs>
       </Box>
