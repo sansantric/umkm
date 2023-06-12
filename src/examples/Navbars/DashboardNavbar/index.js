@@ -108,6 +108,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleSignup = () => setModalSignUp(dispatch, true);
   const handleLogin = () => setLogin(dispatch, true);
 
+  const handleLogout = () => {
+    navigate("/wp-admin");
+    localStorage.removeItem("token");
+  }
+
   // Render the notifications menu
   const renderMenu = () => (
     <Menu
@@ -198,6 +203,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   width: "40%",
                   borderRadius: "50px",
                 }}
+                onClick={handleLogout}
               >
                 Logout
             </Button>
