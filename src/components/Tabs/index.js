@@ -56,6 +56,7 @@ export default function BasicTabs() {
     // fetch data
     const dataFetch = async () => {
       riwayat ? setValue(2) : setValue(0);
+      dispatch({ type: "RIWAYAT", value: false });
       dispatch({ type: "LOADING", value: true });
       let token = localStorage.getItem("token");
       let config = {
@@ -68,7 +69,6 @@ export default function BasicTabs() {
       axios
         .request(config)
         .then((response) => {
-          console.log(JSON.stringify(response.data.data.data));
           setPost(response.data.data.data);
           dispatch({ type: "LOADING", value: false });
         })
@@ -78,8 +78,9 @@ export default function BasicTabs() {
         });
     };
     const fetchHistory = async () => {
+      console.log(user);
       let data = JSON.stringify({
-        "email": user.email
+        email: user.email
       });
       dispatch({ type: "LOADING", value: true });
       let token = localStorage.getItem("token");
@@ -91,11 +92,11 @@ export default function BasicTabs() {
         },
         data: data,
       };
+      console.log(user.email)
       axios
         .request(config)
         .then((response) => {
-          console.log(JSON.stringify('11111111',response.data.data.data));
-          setHistory(response.data.data.data);
+          setHistory(response.data);
           dispatch({ type: "LOADING", value: false });
         })
         .catch((error) => {
@@ -137,9 +138,10 @@ export default function BasicTabs() {
         })}
       </TabPanel>
       <TabPanel value={value} index={2}>
-        {post.map((items, i) => {
-          return items.kategori == "bisnis" ? <CardRow key={i} posts={items} /> : "";
-        })}
+        {history?.length > 0 &&
+          history.map((items, i) => {
+            return items.kategori == "bisnis" ? <CardRow key={i} posts={items} /> : "";
+          })}
       </TabPanel>
     </Box>
   );

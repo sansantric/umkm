@@ -130,30 +130,6 @@ export default function BasicTabs() {
   };
   React.useEffect(() => {
     // fetch data
-    const dataFetch = async () => {
-      riwayat ? setValue(2) : setValue(0);
-      dispatch({ type: "LOADING", value:true });
-      let token = localStorage.getItem("token");
-      let config = {
-        method: "get",
-        url: "https://teman-umkm.website/api/showPost",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      axios
-        .request(config)
-        .then((response) => {
-          console.log(JSON.stringify(response.data.data.data));
-          setPost(response.data.data.data);
-          dispatch({ type: "LOADING", value: false });
-        })
-        .catch((error) => {
-          dispatch({ type: "LOADING", value: false });
-          console.log(error);
-        });
-    };
-    dataFetch();
   }, []);
   return (
     <Box sx={{ width: "100%" }}>
@@ -198,22 +174,6 @@ export default function BasicTabs() {
                 }}
               />
               <FileInput />
-              {/* <strong>Uploaded Files:</strong> {console.log(file)}
-              <input type="file" 
-        onChange={handleFile} ref={inputFile} />
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: "#E2E3E4",
-                  color: "#000",
-                  margin: "10px",
-                  width: "80%",
-                  borderRadius: "50px",
-                }}
-                onClick={() => inputFile.current.click()}
-              >
-                Browse FIle
-              </Button> */}
             </Grid>
             <Grid item xs={8} style={{ width: "100%" }}>
               <TextInput
