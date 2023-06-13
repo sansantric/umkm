@@ -7,12 +7,12 @@ import { styled } from "@mui/system";
 import UnfoldMoreRoundedIcon from "@mui/icons-material/UnfoldMoreRounded";
 
 export default function Dropdown(props) {
-  const { list } = props;
+  const { list, handleOnChange } = props;
   return (
-    <CustomSelect defaultValue={1} onChange={(e) => console.log(e.target.innerHTML)} >
+    <CustomSelect defaultValue={1} onChange={(e) => handleOnChange(e)} >
       {list.map((item, index) => {
         return (
-          <StyledOption key={index} value={item.value} onChange={(e) => console.log(e)} >
+          <StyledOption key={index} value={item.value}  >
             {item.name}
           </StyledOption>
         );
@@ -33,6 +33,7 @@ const CustomSelect = React.forwardRef(function CustomSelect(props, ref) {
 });
 Dropdown.propTypes = {
   list: PropTypes.array,
+  handleOnChange: PropTypes.func,
 };
 CustomSelect.propTypes = {
   /**

@@ -8,6 +8,7 @@ import CardRow from "components/Card/CardRow.js";
 import axios from "axios";
 
 import { useSelector, useDispatch } from "react-redux";
+import CardHistory from "components/Card/CardHistory";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -54,11 +55,38 @@ export default function BasicTabs() {
   };
   React.useEffect(() => {
     // fetch data
+    let token = localStorage.getItem("token");
+    const fetchHistory = async () => {
+      let data = JSON.stringify({
+        email: user.email,
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: "https://teman-umkm.website/api/getByEmail",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        data: data,
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          setHistory(response.data.data);
+          console.log(history);
+          console.log(response.data.data.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
     const dataFetch = async () => {
       riwayat ? setValue(2) : setValue(0);
       dispatch({ type: "RIWAYAT", value: false });
       dispatch({ type: "LOADING", value: true });
-      let token = localStorage.getItem("token");
       let config = {
         method: "get",
         url: "https://teman-umkm.website/api/showPost",
@@ -76,35 +104,8 @@ export default function BasicTabs() {
           dispatch({ type: "LOADING", value: false });
           console.log(error);
         });
+      fetchHistory();
     };
-    const fetchHistory = async () => {
-      console.log(user);
-      let data = JSON.stringify({
-        email: user.email
-      });
-      dispatch({ type: "LOADING", value: true });
-      let token = localStorage.getItem("token");
-      let config = {
-        method: "get",
-        url: "https://teman-umkm.website/api/getByEmail",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        data: data,
-      };
-      console.log(user.email)
-      axios
-        .request(config)
-        .then((response) => {
-          setHistory(response.data);
-          dispatch({ type: "LOADING", value: false });
-        })
-        .catch((error) => {
-          dispatch({ type: "LOADING", value: false });
-          console.log(error);
-        });
-    };
-    fetchHistory();
     dataFetch();
   }, []);
   return (
@@ -138,10 +139,9 @@ export default function BasicTabs() {
         })}
       </TabPanel>
       <TabPanel value={value} index={2}>
-        {history?.length > 0 &&
-          history.map((items, i) => {
-            return items.kategori == "bisnis" ? <CardRow key={i} posts={items} /> : "";
-          })}
+        {history.map((items, i) => {
+          return <CardHistory key={i} posts={items} />
+        })}
       </TabPanel>
     </Box>
   );

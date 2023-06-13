@@ -144,7 +144,7 @@ function Investing() {
                   <Card sx={{ display: "flex", padding: "20px", margin: "10px" }}>
                     <Grid container>
                       <Grid item xs={3}>
-                        <img src={ data.image??defaultImage} style={{width: '200px'}} />
+                        <img src={ `https://teman-umkm.website/storage/${data.image}`} style={{width: '200px'}} />
                       </Grid>
                       <Grid
                         container

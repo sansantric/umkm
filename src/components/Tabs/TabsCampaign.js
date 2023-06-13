@@ -62,9 +62,10 @@ export default function BasicTabs() {
 
   const [namaBisnis, setNamaBisnis] = React.useState("");
   const [bisnis, setBisnis] = React.useState("");
-  const [nominalBisnis, setNominalBisnis] = React.useState("");  
+  const [nominalBisnis, setNominalBisnis] = React.useState("");
   const [estimasi, setEstimasi] = React.useState("");
   const [deskripsi, setDeskripsi] = React.useState("");
+  const [kategori, setKategori] = React.useState("");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -72,48 +73,59 @@ export default function BasicTabs() {
   const handleFile = (e) => {
     setFile([...file, e.target.files[0]]);
   };
+  const handleDropdown = (e) => {
+    setKategori(e);
+  };
   const dataURLtoFile = (dataurl, filename) => {
-    const arr = dataurl.split(',')
-    const mime = arr[0].match(/:(.*?);/)[1]
-    const bstr = atob(arr[1])
-    let n = bstr.length
-    const u8arr = new Uint8Array(n)
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
     while (n) {
-      u8arr[n - 1] = bstr.charCodeAt(n - 1)
-      n -= 1 // to make eslint happy
+      u8arr[n - 1] = bstr.charCodeAt(n - 1);
+      n -= 1; // to make eslint happy
     }
-    return new File([u8arr], filename, { type: mime })
-  }
-  var base64ToBuffer = function(base64) {
-
-    var byteString = new Buffer(base64, 'base64').toString('binary');
+    return new File([u8arr], filename, { type: mime });
+  };
+  var base64ToBuffer = function (base64) {
+    var byteString = new Buffer(base64, "base64").toString("binary");
 
     var ab = new Buffer(byteString.length);
     var ia = new Uint8Array(ab);
     for (var i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
+      ia[i] = byteString.charCodeAt(i);
     }
 
     return ab;
-}
+  };
   const submitCampaign = () => {    
+    dispatch({ type: "LOADING", value: true })
+    const date = new Date();
+    let day = date.getDate().toString().padStart(2, "0");
+    let month = (date.getMonth() + 1).toString().padStart(2, "0");
+    let year = date.getFullYear();
+    let currentDate = `${day}-${month}-${year}`;
+    let endDate = `${day}-${month}-${year + 1}`;
     let token = localStorage.getItem("token");
-    const FormData = require("form-data");
-    let data = new FormData();
-    // const fs = require('fs');
-    // const imgBuffer = Buffer.from(image, 'base64')
-    // const file = dataURLtoFile(image)
-    data.append('judul', 'a');
-    data.append('sub_judul', 'asdasd');
-    data.append('harga', 'asdasd');
-    data.append('kategori', 'asdasd');
-    data.append("gambar", image );
+    let data = JSON.stringify({
+      title: namaBisnis,
+      details: deskripsi,
+      start_date: currentDate,
+      end_date: endDate,
+      total_funds: "0",
+      target_funds: nominalBisnis,
+      profit: estimasi,
+      alamat: "alamat",
+      kategori: kategori,
+      image: image,
+    });
 
     let config = {
       method: "post",
-      url: "https://teman-umkm.website/api/add_post",
+      url: "https://teman-umkm.website/api/funds/post",
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       data: data,
@@ -123,6 +135,13 @@ export default function BasicTabs() {
       .request(config)
       .then((response) => {
         console.log(JSON.stringify(response.data));
+        dispatch({ type: "LOADING", value: false })
+        dispatch({ type: "MODALTYPE", value: "campaignSuccess" });
+        dispatch({ type: "MODAL", value: true });
+        setTimeout(() => {
+          dispatch({ type: "MODAL", value: false })
+          setValue(1)
+        }, 3000);
       })
       .catch((error) => {
         console.log(error);
@@ -182,13 +201,27 @@ export default function BasicTabs() {
                 width="90%"
                 value={namaBisnis}
               />
-              <Dropdown list={[{
-                value: 1,
-                name: "Bisnis A"
-              }, {
-                value: 2,
-                name: "Bisnis B"
-              }]} />
+              <Dropdown
+                handleOnChange={(e) => handleDropdown(e.target.innerHTML)}
+                list={[
+                  {
+                    value: 1,
+                    name: "Peternakan",
+                  },
+                  {
+                    value: 2,
+                    name: "Pertanian",
+                  },
+                  {
+                    value: 3,
+                    name: "Jasa",
+                  },
+                  {
+                    value: 4,
+                    name: "Otomotif",
+                  },
+                ]}
+              />
               <TextInput
                 placeholder="Nominal Investasi"
                 handleChange={(e) => setNominalBisnis(e.target.value)}
@@ -201,7 +234,11 @@ export default function BasicTabs() {
                 width="90%"
                 value={estimasi}
               />
-              <TextArea width={"90%"} maxRows={5} handleChange={(e) => setDeskripsi(e.target.value)}/>
+              <TextArea
+                width={"90%"}
+                maxRows={5}
+                handleChange={(e) => setDeskripsi(e.target.value)}
+              />
             </Grid>
             <Grid
               item

@@ -3,6 +3,7 @@
   "version": "4.0.1",
   "author": "Albert Stevensen",
   "description": "Teman UMKM App",
+  "homepage": "https://temanumkm.site/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/creativetimofficial/soft-ui-dashboard-react.git"
