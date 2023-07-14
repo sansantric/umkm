@@ -56,6 +56,16 @@ function Finance() {
     <DashboardLayout>
       <Box sx={{ flexGrow: 1, margin: "30px" }}>
         <Grid container>
+        <Grid
+          item
+          xs={12}
+          container
+          columnSpacing={10}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Typography variant="h4">Finance</Typography>
+        </Grid>
           <Grid item xs={1} />
           <Grid
             item
@@ -64,8 +74,8 @@ function Finance() {
             columnSpacing={10}
             justifyContent="center"
             alignItems="center"
-            paddingTop="50px"
-            paddingBottom="50px"
+            paddingTop="1rem"
+            paddingBottom="1rem"
           >
             <TabsFinance />
           </Grid>

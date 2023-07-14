@@ -16,7 +16,8 @@ Coded by www.creative-tim.com
 import { useState, useEffect } from "react";
 
 // react-router components
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import Divider from "@mui/material/Divider";
+import { useLocation, Link, useNavigate, NavLink } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -48,7 +49,6 @@ import {
   navbarMobileMenu,
 } from "examples/Navbars/DashboardNavbar/styles";
 
-
 // Images
 import team2 from "assets/images/team-2.jpg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
@@ -57,19 +57,23 @@ import Button from "@mui/material/Button";
 import Badge from "@mui/material/Badge";
 import { useSelector, useDispatch } from "react-redux";
 
+import List from "@mui/material/List";
+import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
+import routes from "routes";
+import axios from "axios";
+
 function DashboardNavbar({ absolute, light, isMini }) {
   const dispatch = useDispatch();
   const store = useSelector((store) => store.mainReducer);
   const [navbarType, setNavbarType] = useState();
   const navigate = useNavigate();
-  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, isLoggin, cart } =
+  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, isLoggin, cart, user } =
     store;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
 
   useEffect(() => {
     // Setting the navbar type
-    console.log("CARt", cart)
     if (fixedNavbar) {
       setNavbarType("sticky");
     } else {
@@ -78,7 +82,10 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
     // A function that sets the transparent state of the navbar.
     function handleTransparentNavbar() {
-      dispatch({ type: "TRANSPARENT_NAVBAR", value: (fixedNavbar && window.scrollY === 0) || !fixedNavbar})
+      dispatch({
+        type: "TRANSPARENT_NAVBAR",
+        value: (fixedNavbar && window.scrollY === 0) || !fixedNavbar,
+      });
       // setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
     }
 
@@ -95,17 +102,43 @@ function DashboardNavbar({ absolute, light, isMini }) {
     return () => window.removeEventListener("scroll", handleTransparentNavbar);
   }, [dispatch, fixedNavbar]);
 
-  const handleMiniSidenav = () => dispatch({ type: "MINI_SIDENAV", value: !miniSidenav })
-  const handleConfiguratorOpen = () => dispatch({ type: "OPEN_CONFIGURATOR", value: !openConfigurator })
+  const handleMiniSidenav = () => dispatch({ type: "MINI_SIDENAV", value: !miniSidenav });
+  const handleConfiguratorOpen = () =>
+    dispatch({ type: "OPEN_CONFIGURATOR", value: !openConfigurator });
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
   const handleSignup = () => dispatch({ type: "SIGNUP", value: true });
   const handleLogin = () => dispatch({ type: "LOGIN", value: true });
 
   const handleLogout = () => {
-    navigate("/wp-admin");
+    navigate("/admin");
     localStorage.removeItem("token");
-  }
+  };
+  const handleLogoutUser = () => {
+    dispatch({ type: "ISLOGIN", value: false });
+    dispatch({ type: "RESET" });
+    // setIsLogin(dispatch, false);
+    let token = localStorage.getItem("token");
+    var config = {
+      method: "get",
+      url: "https://api.temanumkm.site/api/logout",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    localStorage.removeItem("token");
+    handleCloseMenu();
+    navigate("/");
+  };
 
   // Render the notifications menu
   const renderMenu = () => (
@@ -120,37 +153,59 @@ function DashboardNavbar({ absolute, light, isMini }) {
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
-      <NotificationItem
-        image={<img src={team2} alt="person" />}
-        title={["New message", "from Laur"]}
-        date="13 minutes ago"
-        onClick={handleCloseMenu}
-      />
-      <NotificationItem
-        image={<img src={logoSpotify} alt="person" />}
-        title={["New album", "by Travis Scott"]}
-        date="1 day"
-        onClick={handleCloseMenu}
-      />
-      <NotificationItem
-        color="secondary"
+      {/* <NotificationItem
         image={
-          <Icon fontSize="small" sx={{ color: ({ palette: { white } }) => white.main }}>
-            payment
+          <Icon fontSize="small" sx={{ color: "#fff" }}>
+            person
           </Icon>
         }
-        title={["", "Payment successfully completed"]}
-        date="2 days"
+        title={["Profile"]}
         onClick={handleCloseMenu}
+      /> */}
+      <NotificationItem
+        image={
+          <Icon fontSize="small" sx={{ color: "#fff" }}>
+            logout
+          </Icon>
+        }
+        title={["Log Out"]}
+        onClick={handleLogoutUser}
       />
     </Menu>
   );
 
+  const location = useLocation();
+  const { pathname } = location;
+  const collapseName = pathname.split("/").slice(1)[0];
+  let listRoutes = routes.filter((item) => !item.subRoute);
+  const renderRoutes = listRoutes.map(
+    ({ type, name, icon, title, noCollapse, key, route, href, role }) => {
+      let returnValue;
+
+      if (user) {
+        returnValue = role.includes(user.tipe_akun) && (
+          <NavLink to={route} key={key}>
+            <SidenavCollapse
+              key={key}
+              name={name}
+              // icon={icon}
+              active={key === collapseName}
+              noCollapse={noCollapse}
+            />
+          </NavLink>
+        );
+      }
+
+      return returnValue;
+    }
+  );
+
   return (
     <AppBar
-      position={absolute ? "absolute" : navbarType}
-      color="inherit"
+      position="sticky"
+      // color="inherit"
       sx={(theme) => navbar(theme, { transparentNavbar, absolute, light })}
+      style={{ backgroundColor: "#D9D9D9" }}
     >
       <Toolbar sx={(theme) => navbarContainer(theme)}>
         <SoftBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
@@ -158,63 +213,35 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </SoftBox>
         {isMini ? null : isLoggin ? (
           <SoftBox sx={(theme) => navbarRow(theme, { isMini })}>
+            <List style={{ display: "flex", flexDirection: "row" }}>{renderRoutes}</List>
             <SoftBox pr={1}>
-              <IconButton onClick={() => navigate("/list-chat")}>
+              <IconButton onClick={() => navigate("/list-chat")} size="large" color="black">
                 <Badge color="primary">
-                  <ChatIcon color="action" fontSize="large" />
+                  <Icon>question_answer</Icon>
                 </Badge>
               </IconButton>
-              <IconButton onClick={() => navigate("/cart")}>
-                <Badge badgeContent={ cart ? cart.length : 0} color="primary">
-                  <ShoppingCartIcon color="action" fontSize="large" />
+              <IconButton onClick={() => navigate("/cart")} size="large" color="black">
+                <Badge badgeContent={cart ? cart.length : 0} color="info">
+                  <Icon>shopping_cart</Icon>
                 </Badge>
               </IconButton>
             </SoftBox>
-            <SoftBox pr={1}>
-              <SoftInput
-                placeholder="Search..."
-                icon={{ component: "search", direction: "left" }}
-              />
+
+            <SoftBox color={light ? "white" : "inherit"}>
+              <IconButton size="large" color="black" onClick={handleOpenMenu}>
+                <Icon>account_circle</Icon>
+              </IconButton>
+              {renderMenu()}
             </SoftBox>
           </SoftBox>
         ) : route[1] === "dashboard" ? (
-          
-          <SoftBox pr={1} >
-            <Button
-                variant="contained"
-                style={{
-                  backgroundColor: "#3D7EBB",
-                  margin: "10px",
-                  width: "40%",
-                  borderRadius: "50px",
-                }}
-              >
-                Dashboard
-            </Button>
-            <Button
-                variant="contained"
-                style={{
-                  backgroundColor: "#3D7EBB",
-                  margin: "10px",
-                  width: "40%",
-                  borderRadius: "50px",
-                }}
-                onClick={handleLogout}
-              >
-                Logout
-            </Button>
-              {/* <img src={brand} alt="Soft UI Logo" width="30px" />
-              <SoftBox
-                width={"100%"}
-              >
-                <SoftTypography component="h6" variant="button" fontWeight="medium">
-                  Almas
-                </SoftTypography>
-              </SoftBox> */}
+          <SoftBox color={light ? "white" : "inherit"}>
+            <IconButton size="large" color="black" onClick={handleOpenMenu}>
+              <Icon>account_circle</Icon>
+            </IconButton>
+            {renderMenu()}
           </SoftBox>
-        )
-        :  
-        (
+        ) : (
           <SoftBox sx={(theme) => navbarRow(theme, { isMini })}>
             <SoftBox pr={1}>
               <Button variant="contained" color="primary" onClick={handleLogin}>

@@ -39,9 +39,9 @@ const root = {
   backgroundPositionX: "25% !important",
   transition: `all 150ms ease-in`,
 
-  "&:hover": {
-    transform: "scale(1.02)",
-  },
+  // "&:hover": {
+  //   transform: "scale(1.02)",
+  // },
 
   "&:disabled": {
     pointerEvent: "none",

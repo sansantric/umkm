@@ -4,7 +4,6 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import CardRow from "components/Card/CardRow.js";
 import axios from "axios";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -55,58 +54,45 @@ const tabStyle = () => {
   };
 };
 
-export default function BasicTabs() {
+export default function TabsInvestor() {
   const dispatch = useDispatch();
   const store = useSelector((store) => store.mainReducer);
   const [value, setValue] = React.useState(0);
-  const [posts, setPost] = React.useState([]);
   const { riwayat, user, post } = store;
-  const [, updateState] = React.useState();
-  const forceUpdate = React.useCallback(() => updateState({}), []);
-
-  const [investasi, setInvestasi] = React.useState();
-  const [bisnis, setBisnis] = React.useState();
-  const [history, setHistory] = React.useState();
+  const [data, setData] = React.useState();
+  const [statusInvest, setStatusInvest] = React.useState();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
   React.useEffect(() => {
-    // fetch data
     let token = localStorage.getItem("token");
-    const fetchHistory = async () => {
-      let data = JSON.stringify({
-        email: user.email,
-      });
+    const fetchStatusInves = () => {
+      var data = JSON.stringify({});
 
-      let config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: "https://api.temanumkm.site/api/getByEmail",
+      var config = {
+        method: "get",
+        url: "https://api.temanumkm.site/api/invests",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         data: data,
       };
 
-      axios
-        .request(config)
-        .then((response) => {
-          setHistory(response.data.data);
-          dispatch({ type: "POST_HISTORY", value: response.data.data });
+      axios(config)
+        .then(function (response) {
+          setStatusInvest(response.data.message)
         })
-        .catch((error) => {
+        .catch(function (error) {
           console.log(error);
         });
     };
-    const dataFetch = async () => {
-      riwayat ? setValue(2) : setValue(0);
-      dispatch({ type: "RIWAYAT", value: false });
+    const fetchData = async () => {
       dispatch({ type: "LOADING", value: true });
       let config = {
         method: "get",
-        url: "https://api.temanumkm.site/api/showPost",
+        url: "https://api.temanumkm.site/api/funds",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -114,24 +100,16 @@ export default function BasicTabs() {
       axios
         .request(config)
         .then((response) => {
-          let bisnis = [];
-          let investasi = [];
-          response.data.data.data.map((items, i) => {
-            return items.kategori == "bisnis" ? bisnis.push(items) : investasi.push(items);
-          });
-          setBisnis(bisnis);
-          setInvestasi(investasi);
-          dispatch({ type: "POST", value: response.data.data.data });
+          setData(response.data.message);
           dispatch({ type: "LOADING", value: false });
-          fetchHistory();
         })
         .catch((error) => {
           dispatch({ type: "LOADING", value: false });
           console.log(error);
         });
     };
-    dataFetch();
-    forceUpdate();
+    fetchStatusInves();
+    fetchData();
   }, []);
   return (
     <Box sx={{ width: "100%" }}>
@@ -155,28 +133,15 @@ export default function BasicTabs() {
             },
           }}
         >
-          <Tab label="Investasi" {...a11yProps(0)} sx={tabStyle} />
-          <Tab label="Bisnis" {...a11yProps(1)} sx={tabStyle} />
-          <Tab label="Riwayat" {...a11yProps(2)} sx={tabStyle} />
+          <Tab label="Mulai Investasi" {...a11yProps(0)} sx={tabStyle} />
+          <Tab label="Status" {...a11yProps(1)} sx={tabStyle} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        {investasi && <PaginationCard posts={post.investasi} menu="article-investasi" />}
-        {/* {post.map((items, i) => {
-            return items.kategori == "investasi" ? <PaginationCard key={i} posts={post} /> : "";
-          })} */}
+        {data && <PaginationCard posts={data} menu="investasi" />}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {bisnis && <PaginationCard posts={post.bisnis} menu="bisnis" />}
-        {/* {post.map((items, i) => {
-            return items.kategori == "bisnis" ? <CardRow key={i} posts={items} /> : "";
-          })} */}
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        {history && <PaginationCard posts={post.history} menu="history" />}
-        {/* {post.history.map((items, i) => {
-            return <CardHistory key={i} posts={items} />;
-          })} */}
+        {statusInvest && <PaginationCard posts={statusInvest} menu="status-investasi" />}
       </TabPanel>
     </Box>
   );

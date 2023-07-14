@@ -15,7 +15,7 @@ Coded by www.creative-tim.com
 
 // @mui material components
 import * as React from "react";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 
@@ -55,32 +55,33 @@ import Card from "@mui/material/Card";
 import { Typography } from "@mui/material";
 
 import { Button } from "@mui/material";
-import { NavLink } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
 import TextInput from "components/Text/TextInput";
-import Modal from '@mui/material/Modal';
-import TextareaAutosize from '@mui/base/TextareaAutosize';
-import { styled } from '@mui/system';
+import Modal from "@mui/material/Modal";
+import TextareaAutosize from "@mui/base/TextareaAutosize";
+import { styled } from "@mui/system";
+import Avatar from "@mui/material/Avatar";
 
 const blue = {
-  100: '#DAECFF',
-  200: '#b6daff',
-  400: '#3399FF',
-  500: '#007FFF',
-  600: '#0072E5',
-  900: '#003A75',
+  100: "#DAECFF",
+  200: "#b6daff",
+  400: "#3399FF",
+  500: "#007FFF",
+  600: "#0072E5",
+  900: "#003A75",
 };
 
 const grey = {
-  50: '#f6f8fa',
-  100: '#eaeef2',
-  200: '#d0d7de',
-  300: '#afb8c1',
-  400: '#8c959f',
-  500: '#6e7781',
-  600: '#57606a',
-  700: '#424a53',
-  800: '#32383f',
-  900: '#24292f',
+  50: "#f6f8fa",
+  100: "#eaeef2",
+  200: "#d0d7de",
+  300: "#afb8c1",
+  400: "#8c959f",
+  500: "#6e7781",
+  600: "#57606a",
+  700: "#424a53",
+  800: "#32383f",
+  900: "#24292f",
 };
 
 const StyledTextarea = styled(TextareaAutosize)(
@@ -92,10 +93,10 @@ const StyledTextarea = styled(TextareaAutosize)(
   line-height: 1.5;
   padding: 12px;
   border-radius: 12px;
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-  border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-  box-shadow: 0px 2px 2px ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
+  color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
+  background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
+  border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
+  box-shadow: 0px 2px 2px ${theme.palette.mode === "dark" ? grey[900] : grey[50]};
 
   &:hover {
     border-color: ${blue[400]};
@@ -103,78 +104,79 @@ const StyledTextarea = styled(TextareaAutosize)(
 
   &:focus {
     border-color: ${blue[400]};
-    box-shadow: 0 0 0 3px ${theme.palette.mode === 'dark' ? blue[500] : blue[200]};
+    box-shadow: 0 0 0 3px ${theme.palette.mode === "dark" ? blue[500] : blue[200]};
   }
 
   // firefox
   &:focus-visible {
     outline: 0;
   }
-`,
+`
 );
 
 function DetailChat() {
   const dispatch = useDispatch();
-  const {identifier}          = useParams();
+  const { identifier } = useParams();
   const [data, setData] = React.useState([]);
   const [dataUser, setDataUser] = React.useState([]);
-  const [subject, setSubject] = React.useState('');
-  const [message, setMessage] = React.useState('');
+  const [subject, setSubject] = React.useState("");
+  const [message, setMessage] = React.useState("");
   let navigate = useNavigate();
-  const defaultImage = 'https://static.vecteezy.com/system/resources/previews/004/705/198/original/store-icon-design-symbol-market-retail-building-storefront-for-ecommerce-free-vector.jpg';
+  const defaultImage =
+    "https://static.vecteezy.com/system/resources/previews/004/705/198/original/store-icon-design-symbol-market-retail-building-storefront-for-ecommerce-free-vector.jpg";
 
   const submit = (e) => {
     let token = localStorage.getItem("token");
 
     let config = {
       method: "post",
-      url: `https://teman-umkm.website/api/chats/${identifier}`,
+      url: `https://api.temanumkm.site/api/chats/${data.sender_id}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       data: {
-        'subject': subject,
-        'description': message,
+        subject: subject,
+        description: message,
       },
     };
     axios
       .request(config)
       .then((response) => {
-        dispatch({ type: "LOADING", value: false })
-        if (response.data.message === 'chat sent!') handleSucces();          
-        else handleFailed();          
+        dispatch({ type: "LOADING", value: false });
+        if (response.data.message === "chat sent!") handleSucces();
+        else handleFailed();
       })
       .catch((error) => {
-        dispatch({ type: "LOADING", value: false })
+        dispatch({ type: "LOADING", value: false });
         handleFailed();
         console.log(error);
       });
   };
 
   const handleSucces = () => {
-    dispatch({ type: "MODALTYPE", value: 'chatSuccess' })
-    dispatch({ type: "MODAL", value: true })
+    dispatch({ type: "MODALTYPE", value: "chatSuccess" });
+    dispatch({ type: "MODAL", value: true });
     setTimeout(() => {
-      dispatch({ type: "MODAL", value: false })
+      dispatch({ type: "MODAL", value: false });
       navigate("/list-chat");
     }, 3000);
   };
 
   const handleFailed = () => {
-    dispatch({ type: "MODALTYPE", value: 'chatFailed' })
-    dispatch({ type: "MODAL", value: true })
+    dispatch({ type: "MODALTYPE", value: "chatFailed" });
+    dispatch({ type: "MODAL", value: true });
     setTimeout(() => {
-      dispatch({ type: "MODAL", value: false })
+      dispatch({ type: "MODAL", value: false });
     }, 3000);
   };
 
-  React.useEffect(() => {    
+  React.useEffect(() => {
     const fetchData = async () => {
       let token = localStorage.getItem("token");
       let config = {
         method: "get",
-        url: `https://teman-umkm.website/api/chats/${identifier}`,
+        url: `https://api.temanumkm.site/api/chats/${identifier}`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -183,10 +185,10 @@ function DetailChat() {
         .request(config)
         .then((response) => {
           setData(response.data.message);
-          dispatch({ type: "LOADING", value: false })
+          dispatch({ type: "LOADING", value: false });
         })
         .catch((error) => {
-          dispatch({ type: "LOADING", value: false })
+          dispatch({ type: "LOADING", value: false });
           console.log(error);
         });
     };
@@ -199,83 +201,86 @@ function DetailChat() {
       <Box sx={{ flexGrow: 1, margin: "30px" }}>
         <Grid container>
           <Box sx={{ width: "100%" }}>
-            {
-              typeof data.subject === 'undefined' ? 
-                <> 
-                  <Card sx={{ display: "flex", padding: "20px", margin: "10px" }}/>
-                </> :
-                <>
-                  <Grid 
-                    container 
-                    xs={12}
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <Typography variant="h3">Form Chat</Typography>
-                  </Grid>
-                  <Card sx={{ display: "flex", padding: "20px", margin: "10px" }}>
-                    <Grid container>
+            {typeof data.subject === "undefined" ? (
+              <>
+                <Card sx={{ display: "flex", padding: "20px", margin: "10px" }} />
+              </>
+            ) : (
+              <>
+                {/* <Grid container xs={12} direction="row" justifyContent="center" alignItems="center">
+                  <Typography variant="h3">Form Chat</Typography>
+                </Grid> */}
+                <Card
+                  sx={{
+                    display: "flex",
+                    padding: "20px",
+                    marginTop: "20px",
+                    marginBottom: "20px",
+                    boxShadow: "5px 5px 5px rgba(0,0,0,0.1)",
+                    border: "1px solid rgba(0,0,0,0.1)",
+                    backgroundColor: "rgba(0,0,0,0.05)",
+                  }}
+                >
+                  <Grid container>
+                    <Grid
+                      container
+                      xs={12}
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="flex-start"
+                    >
                       <Grid
                         container
+                        item
                         xs={12}
-                        direction="row"
-                        justifyContent="flex-start"
-                        alignItems="flex-start"
-                      > 
-                        <Grid
-                          container
-                          item
-                          xs={12}
-                          direction="column"
-                          justifyContent="flex-start"
-                          alignItems="flex-start"
-                        > 
-                          <Grid
-                            container
-                            item
-                            xs={12}
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="flex-start"
-                          > 
-                            <Typography variant="h6" style={{ marginBottom: "10px" }}>From : {data.sender.nama} </Typography>
-                            <Typography variant="h6" style={{ marginBottom: "10px" }}>{`${data.date} ${data.time}`??'-'}</Typography>
-                          </Grid>
-                          <Typography variant="h6">{data.subject??'-'}</Typography>
-                          <Typography variant="caption" style={{ marginTop: "10px", marginBottom: "30px"}}>{data.description??'-'}</Typography>
-                        </Grid>
-                        <Grid
-                          container
-                          item
-                          xs={12}
-                          direction="column"
-                          justifyContent="center"
-                          alignItems="center"
-                        > 
-                          <TextInput 
+                        direction="column"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <div style={{ width: "80%", display: "flex", flexDirection: "column" }}>
+                          <div
+                            style={{ marginBottom: "1rem", display: "flex", alignItems: "center" }}
+                          >
+                            <Avatar sx={{bgcolor:"#3D7EBB"}} >{data.sender.nama.charAt(0).toUpperCase()}</Avatar>
+                            <Typography variant="h6" paddingLeft="1rem">{data.sender.nama} </Typography>
+                          </div>
+                          <Typography variant="subtitle2">
+                            Subject : {data.subject ?? "-"}
+                          </Typography>
+                          <Typography variant="subtitle2" style={{}}>
+                            Description : {data.description ?? "-"}
+                          </Typography>
+                          <TextInput
                             value={subject}
-                            placeholder="Chat Subject" 
-                            width="900px"
-                            style={{ marginBottom: "10px"}}
-                            handleChange={(e) => (setSubject(e.target.value))} 
+                            placeholder="Chat Subject"
+                            width="100%"
+                            style={{ marginBottom: "10px" }}
+                            handleChange={(e) => setSubject(e.target.value)}
                           />
-                          <StyledTextarea 
-                            placeholder="Chat Description" 
+                          <StyledTextarea
+                            placeholder="Chat Description"
                             maxRows="10"
                             minRows="5"
-                            style={{ width: "900px" }} 
-                            onChange={(e) => (setMessage(e.target.value))} 
+                            style={{ width: "100%" }}
+                            onChange={(e) => setMessage(e.target.value)}
                           />
-                          <NavLink style={{ marginTop: "10px", width: "70%" }}>
-                            <Button variant="contained" color="primary" style={{borderRadius: "30px", width: "100%"}} onClick={submit}>Reply Chat</Button>
+                          <NavLink style={{ marginTop: "10px", width: "50%", alignSelf: "center" }}>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              style={{ borderRadius: "30px", width: "100%" }}
+                              onClick={submit}
+                            >
+                              Reply Chat
+                            </Button>
                           </NavLink>
-                        </Grid>
+                        </div>
                       </Grid>
                     </Grid>
-                  </Card>
-                </>
-            }
+                  </Grid>
+                </Card>
+              </>
+            )}
           </Box>
         </Grid>
       </Box>

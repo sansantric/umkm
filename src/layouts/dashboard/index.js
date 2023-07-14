@@ -46,35 +46,59 @@ import factory from "assets/images/factory.png";
 
 import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
 function Dashboard() {
   const { size } = typography;
   const { chart, items } = reportsBarChartData;
 
   return (
     <DashboardLayout>
-      <Box sx={{ flexGrow: 1, margin:'30px'}}>
+      <Box sx={{ flexGrow: 1, margin: "30px" }}>
         <Grid container>
-          <Grid item xs={12} >
-            <Typography variant="h2">
-              Selamat Datang di Teman UMKM!
-            </Typography>
+          <Grid item xs={12} container justifyContent="center" alignItems="center">
+            <Typography variant="h2">Selamat Datang di Teman UMKM!</Typography>
           </Grid>
-          <Grid item xs={12} container columnSpacing={10} justifyContent="center" alignItems="center" paddingTop="50px" paddingBottom="50px" >
-            <img src={factory} style={{ width: "60%" }} />
+          <Grid
+            item
+            xs={12}
+            container
+            columnSpacing={10}
+            justifyContent="center"
+            alignItems="center"
+            paddingTop="50px"
+            paddingBottom="50px"
+          >
+            <img src={factory} style={{ width: "35%" }} />
           </Grid>
 
-          <Grid item xs={3}/>
-          <Grid item xs={6} container columnSpacing={10} justifyContent="center" alignItems="center" textAlign="center">
-            <Typography variant="h2">
-              Dapatkan Dana Untuk Mengembangkan Bisnis Anda!
-            </Typography>
+          <Grid item xs={3} />
+          <Grid
+            item
+            xs={6}
+            container
+            columnSpacing={10}
+            justifyContent="center"
+            alignItems="center"
+            textAlign="center"
+          >
+            <Typography variant="h2">Dapatkan Dana Untuk Mengembangkan Bisnis Anda!</Typography>
           </Grid>
-          <Grid item xs={3}/>
+          <Grid item xs={3} />
         </Grid>
-          <Grid item xs={12} container columnSpacing={10} justifyContent="center" alignItems="center" paddingTop="50px" paddingBottom="50px" >
-            <Button variant="contained" color="primary" size="large">Daftarkan Bisnis</Button>
-          </Grid>
+        {/* <Grid
+          item
+          xs={12}
+          container
+          columnSpacing={10}
+          justifyContent="center"
+          alignItems="center"
+          paddingTop="50px"
+          paddingBottom="50px"
+        >
+          <Button variant="contained" color="primary" size="large" style={{ borderRadius: "50px" }}>
+            Daftarkan Bisnis
+          </Button>
+        </Grid> */}
       </Box>
     </DashboardLayout>
   );

@@ -55,7 +55,7 @@ import { useSelector, useDispatch } from "react-redux";
 function SignIn() {
   const dispatch = useDispatch();
   const store = useSelector((store) => store.mainReducer);
-  const { login } = store;  
+  const { login } = store;
   const navigate = useNavigate();
   const [agreement, setAgremment] = useState(true);
   const [userInfo, setUserinfo] = useState({
@@ -71,49 +71,56 @@ function SignIn() {
   const handlePassword = (val) => setUserinfo({ ...userInfo, password: val });
   const restUserInfo = () =>
     setUserinfo({
-      email: "", 
+      email: "",
       password: "",
     });
 
   const handleSetAgremment = () => setAgremment(!agreement);
-  const handleClose = () => dispatch({ type: "LOGIN", value: false })
+  const handleClose = () => dispatch({ type: "LOGIN", value: false });
   const handleSucces = () => {
-    dispatch({ type: "MODAL", value: true })
+    dispatch({ type: "MODAL", value: true });
     setTimeout(() => {
-      dispatch({ type: "MODAL", value: false })
+      dispatch({ type: "MODAL", value: false });
     }, 3000);
   };
   const handleSignUp = () => {
-    dispatch({ type: "LOGIN", value: false })
-    dispatch({ type: "SIGNUP", value: true })
+    dispatch({ type: "LOGIN", value: false });
+    dispatch({ type: "SIGNUP", value: true });
   };
-
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    handleSignIn();
+    // You should see email and password in console.
+    // ..code to submit form to backend here...
+  };
   const handleSignIn = async () => {
-    dispatch({ type: "LOADING", value: true})
+    dispatch({ type: "LOADING", value: true });
     let data = JSON.stringify(userInfo);
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://teman-umkm.website/api/login",
+      url: "https://api.temanumkm.site/api/login",
       headers: {
         "Content-Type": "application/json",
       },
       data: data,
     };
-    console.log(data);
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
         localStorage.setItem("token", response.data.token);
-        dispatch({ type: "USER", value: response.data.user })
-        dispatch({ type: "LOADING", value: false})
-        dispatch({ type: "ISLOGIN", value: true })
-        handleClose()
+        dispatch({ type: "USER", value: response.data.user });
+        dispatch({ type: "LOADING", value: false });
+        dispatch({ type: "ISLOGIN", value: true });
+        handleClose();
         navigate("/home");
       })
       .catch((error) => {
-        console.log(error);
+        dispatch({ type: "LOADING", value: false });
+        dispatch({ type: "ALERT", value: true });
+        dispatch({ type: "STATUS", value: "error" });
+        dispatch({ type: "MESSAGE", value: error.response.data.error });
+        console.log(error.response.data.error);
       });
   };
 
@@ -135,57 +142,92 @@ function SignIn() {
       open={login}
       onClose={handleClose}
     >
-      <Box sx={style}>
-        <Grid
-          container
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: "20px",
-          }}
-        >
-          <Grid item xs={5} container justifyContent="center" alignItems="center">
-            <img src={loginImg} />
-            {/* <Box sx={{display: 'flex', backgroundColor: '#ffffff', padding: '10px', borderTopLeftRadius: '5px', borderBottomLeftRadius: '5px',justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
+      <form onSubmit={handleSubmit}>
+        <Box sx={style}>
+          <Grid
+            container
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: "20px",
+            }}
+          >
+            <Grid item xs={5} container justifyContent="center" alignItems="center">
+              <img src={loginImg} style={{ width: "90%" }} />
+              {/* <Box sx={{display: 'flex', backgroundColor: '#ffffff', padding: '10px', borderTopLeftRadius: '5px', borderBottomLeftRadius: '5px',justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
               
             </Box> */}
-          </Grid>
-          <Grid item xs={7}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                backgroundColor: "#3D7EBB",
-                padding: "20px",
-                paddingTop: "70",
-                paddingBottom: "70px",
-                borderRadius: "20px",
-                justifyContent: "center",
-                alignItems: "center",
-                alignContent: "center",
-                width:"100%"
-              }}
-            >
-              <Typography variant="h3" style={{ color: "#ffffff", margin: "30px" }}>
-                Masuk
-              </Typography>
-              <TextInput placeholder="Email" handleChange={(e) => handleEmail(e.target.value)} width="100%" 
-                value={userInfo.email}/>
-              <TextInput placeholder="Password" handleChange={(e) => handlePassword(e.target.value)} type="password" width="100%" 
-                value={userInfo.password} />
-              
-              <Link href="#" style={{textDecoration: "underline", color: '#fff', fontSize: '17px', fontWeight: '400'}} >Forgot Password?</Link>
-              <Button
-                variant="contained"
-                style={{ backgroundColor: "#E2E3E4", color: "#000", margin: "10px", width: "80%" }}
-                onClick={handleSignIn}
+            </Grid>
+            <Grid item xs={7}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  backgroundColor: "#3D7EBB",
+                  padding: "70px",
+                  paddingTop: "40px",
+                  paddingBottom: "40px",
+                  borderRadius: "20px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  alignContent: "center",
+                  width: "100%",
+                }}
               >
-                Masuk
-              </Button>
-              <Link href="#" style={{textDecoration: "underline", marginBottom: "20px", color: '#fff'}} onClick={handleSignUp} >Belum Memiliki Akun?</Link>
-            </Box>
+                <Typography variant="h3" style={{ color: "#ffffff", margin: "30px" }}>
+                  Masuk
+                </Typography>
+                <TextInput
+                  placeholder="Email"
+                  handleChange={(e) => handleEmail(e.target.value)}
+                  width="100%"
+                  value={userInfo.email}
+                />
+                <TextInput
+                  placeholder="Password"
+                  handleChange={(e) => handlePassword(e.target.value)}
+                  type="password"
+                  width="100%"
+                  value={userInfo.password}
+                  icon
+                  suffix="true"
+                />
+
+                <Link
+                  href="#"
+                  style={{
+                    textDecoration: "underline",
+                    color: "#fff",
+                    fontSize: "17px",
+                    fontWeight: "400",
+                  }}
+                >
+                  Forgot Password?
+                </Link>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  style={{
+                    backgroundColor: "#E2E3E4",
+                    color: "#000",
+                    margin: "10px",
+                    width: "80%",
+                  }}
+                  onClick={handleSignIn}
+                >
+                  Masuk
+                </Button>
+                <Link
+                  href="#"
+                  style={{ textDecoration: "underline", marginBottom: "20px", color: "#fff" }}
+                  onClick={handleSignUp}
+                >
+                  Belum Memiliki Akun?
+                </Link>
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      </form>
     </Modal>
   );
 }

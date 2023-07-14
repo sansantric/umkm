@@ -12,6 +12,7 @@ import TextArea from "components/Text/TextArea";
 import TextInput from "components/Text/TextInput";
 import FileInput from "components/Text/ButtonFIle";
 import CardCampaign from "components/Card/CardCampaign";
+import campaign_running from "assets/images/campaign_running.png";
 
 import Dropdown from "components/Dropdown";
 import Button from "@mui/material/Button";
@@ -50,57 +51,44 @@ function a11yProps(index) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-
+const tabStyle = () => {
+  return {
+    fontWeight: "500",
+    fontSize: "0.9rem",
+    "&.Mui-selected": {
+      color: "#ffffff !important",
+    },
+    paddingLeft: "5rem",
+    paddingRight: "5rem",
+  };
+};
 export default function BasicTabs() {
   const dispatch = useDispatch();
   const store = useSelector((store) => store.mainReducer);
   const [value, setValue] = React.useState(0);
-  const [post, setPost] = React.useState([]);
-  const { riwayat, image } = store;
+  const { image } = store;
   const [file, setFile] = React.useState([]);
-  const inputFile = React.useRef(null);
+  const [statusCampign, setStatusCampaign] = React.useState({});
 
-  const [namaBisnis, setNamaBisnis] = React.useState("");
-  const [bisnis, setBisnis] = React.useState("");
-  const [nominalBisnis, setNominalBisnis] = React.useState("");
-  const [estimasi, setEstimasi] = React.useState("");
-  const [deskripsi, setDeskripsi] = React.useState("");
-  const [kategori, setKategori] = React.useState("");
+  const [campaign, setCampaign] = React.useState({
+    NamaBisnis: "",
+    EmailBisnis: "",
+    KategoriBisnis: "",
+    AlamatBisnis: "",
+    NomorTelepon: "",
+    TanggalSelesai: "",
+    TargetModal: "",
+    Presentase: 0,
+    LogoBisnis: "",
+    Proposal: "",
+    KTP: "",
+  });
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const handleFile = (e) => {
-    setFile([...file, e.target.files[0]]);
-  };
-  const handleDropdown = (e) => {
-    setKategori(e);
-  };
-  const dataURLtoFile = (dataurl, filename) => {
-    const arr = dataurl.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n) {
-      u8arr[n - 1] = bstr.charCodeAt(n - 1);
-      n -= 1; // to make eslint happy
-    }
-    return new File([u8arr], filename, { type: mime });
-  };
-  var base64ToBuffer = function (base64) {
-    var byteString = new Buffer(base64, "base64").toString("binary");
-
-    var ab = new Buffer(byteString.length);
-    var ia = new Uint8Array(ab);
-    for (var i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-
-    return ab;
-  };
-  const submitCampaign = () => {    
-    dispatch({ type: "LOADING", value: true })
+  const submitCampaign = () => {
+    dispatch({ type: "LOADING", value: true });
     const date = new Date();
     let day = date.getDate().toString().padStart(2, "0");
     let month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -109,21 +97,25 @@ export default function BasicTabs() {
     let endDate = `${day}-${month}-${year + 1}`;
     let token = localStorage.getItem("token");
     let data = JSON.stringify({
-      title: namaBisnis,
-      details: deskripsi,
-      start_date: currentDate,
+      title: campaign.NamaBisnis,
+      email: campaign.EmailBisnis,
+      kategori: campaign.KategoriBisnis,
+      alamat: campaign.AlamatBisnis,
+      no_telp: campaign.NomorTelepon,
       end_date: endDate,
+      start_date: currentDate,
+      target_funds: campaign.TargetModal,
+      profit: campaign.Presentase,
+      proposal: campaign.Proposal,
+      image: campaign.LogoBisnis,
+      identitas_bisnis: campaign.KTP,
+      details: "detail",
       total_funds: "0",
-      target_funds: nominalBisnis,
-      profit: estimasi,
-      alamat: "alamat",
-      kategori: kategori,
-      image: image,
     });
 
     let config = {
       method: "post",
-      url: "https://teman-umkm.website/api/funds/post",
+      url: "https://api.temanumkm.site/api/funds/post",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -134,76 +126,147 @@ export default function BasicTabs() {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
-        dispatch({ type: "LOADING", value: false })
+        dispatch({ type: "LOADING", value: false });
         dispatch({ type: "MODALTYPE", value: "campaignSuccess" });
         dispatch({ type: "MODAL", value: true });
         setTimeout(() => {
-          dispatch({ type: "MODAL", value: false })
-          setValue(1)
+          dispatch({ type: "MODAL", value: false });
+          window.location.reload(true);
         }, 3000);
       })
       .catch((error) => {
+        dispatch({ type: "LOADING", value: false });
+        dispatch({ type: "ALERT", value: true });
+        dispatch({ type: "STATUS", value: "error" });
+        dispatch({ type: "MESSAGE", value: "Registrasi Campaign Failed" });
         console.log(error);
       });
   };
   React.useEffect(() => {
-    // fetch data
+    dispatch({ type: "LOADING", value: true });
+    const fetchCampign = async () => {
+      let token = localStorage.getItem("token");
+      let data = JSON.stringify({});
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: "https://api.temanumkm.site/api/funds/getByStatus",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        data: data,
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          setStatusCampaign(response.data.data);
+          if (response.data.data.is_cair != 1) {
+            setValue(1);
+          }
+          dispatch({ type: "LOADING", value: false });
+        })
+        .catch((error) => {
+          setStatusCampaign();
+          dispatch({ type: "LOADING", value: false });
+          console.log(error);
+        });
+    };
+    fetchCampign();
   }, []);
   return (
     <Box sx={{ width: "100%" }}>
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
         <Tabs
           value={value}
           onChange={handleChange}
-          aria-label="basic tabs example"
-          sx={{ background: "#F0F0F0", borderRadius: "30px", height: "50px", width: "50%" }}
+          sx={{
+            // width: "50%",
+            background: "#F0F0F0",
+            borderRadius: "30px",
+            height: "3rem",
+            // marginLeft: "24px",
+            // marginRight: "24px",
+            boxShadow: "5px 5px 5px rgba(0,0,0,0.1)",
+          }}
           TabIndicatorProps={{
             style: {
               background: "#3D7EBB",
               borderRadius: "30px",
+              color: "#fff !important",
             },
           }}
         >
-          <Tab label="Register Bisnis" {...a11yProps(0)} />
-          <Tab label="Status" {...a11yProps(1)} />
+          <Tab label="Register Bisnis" {...a11yProps(0)} sx={tabStyle} />
+          <Tab label="Status" {...a11yProps(1)} sx={tabStyle} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <Paper>
+        {statusCampign && statusCampign.is_cair != 1 ? (
+          <Grid item xs={12} style={{ display: "flex", justifyContent: "center" }}>
+            <img src={campaign_running} style={{ width: "40%" }} />
+          </Grid>
+        ) : (
           <Grid container>
             <Grid
               item
-              xs={4}
-              style={{
+              xs={12}
+              sx={{
+                // padding: "50px",
+                marginLeft: "50px",
+                marginRight: "50px",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <img
-                src={image}
-                style={{
-                  width: "90%",
-                  boxShadow: "5px 5px 5px rgba(0,0,0,0.5)",
-                  margin: "20px",
-                  borderRadius: "10px",
-                  border: "1px solid black",
-                }}
-              />
-              <FileInput />
-            </Grid>
-            <Grid item xs={8} style={{ width: "100%" }}>
               <TextInput
-                placeholder="Nama Bisnis"
-                handleChange={(e) => setNamaBisnis(e.target.value)}
-                width="90%"
-                value={namaBisnis}
+                label="Nama Bisnis"
+                // placeholder="Nama Bisnis"
+                handleChange={(e) =>
+                  setCampaign({
+                    ...campaign,
+                    NamaBisnis: e.target.value,
+                  })
+                }
+                width="100%"
+                value={campaign.NamaBisnis}
               />
-              <Dropdown
-                handleOnChange={(e) => handleDropdown(e.target.innerHTML)}
+              <TextInput
+                label="Email Bisnis"
+                // placeholder="Email Bisnis"
+                handleChange={(e) =>
+                  setCampaign({
+                    ...campaign,
+                    EmailBisnis: e.target.value,
+                  })
+                }
+                width="100%"
+                value={campaign.EmailBisnis}
+              />
+              <TextInput
+                label="Kategori Bisnis"
+                placeholder="Kategori Bisnis"
+                handleChange={(e) =>
+                  setCampaign({
+                    ...campaign,
+                    KategoriBisnis: e.target.innerHTML,
+                  })
+                }
+                width="100%"
+                value={campaign.KategoriBisnis}
                 list={[
+                  {
+                    value: 0,
+                    name: "Pilih Kategori Bisnis",
+                  },
                   {
                     value: 1,
                     name: "Peternakan",
@@ -222,53 +285,169 @@ export default function BasicTabs() {
                   },
                 ]}
               />
+
               <TextInput
-                placeholder="Nominal Investasi"
-                handleChange={(e) => setNominalBisnis(e.target.value)}
-                width="90%"
-                value={nominalBisnis}
+                label="Alamat Bisnis"
+                // placeholder="Alamat Bisnis"
+                handleChange={(e) =>
+                  setCampaign({
+                    ...campaign,
+                    AlamatBisnis: e.target.value,
+                  })
+                }
+                width="100%"
+                value={campaign.AlamatBisnis}
               />
               <TextInput
-                placeholder="Estimasi Keuntungan"
-                handleChange={(e) => setEstimasi(e.target.value)}
-                width="90%"
-                value={estimasi}
-              />
-              <TextArea
-                width={"90%"}
-                maxRows={5}
-                handleChange={(e) => setDeskripsi(e.target.value)}
-              />
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: "#3D7EBB",
-                  margin: "10px",
-                  width: "50%",
-                  borderRadius: "50px",
+                label="Nomor Telepon Bisnis"
+                // placeholder="Nomor Telepon Bisnis"
+                handleChange={(e) => {
+                  setCampaign({
+                    ...campaign,
+                    NomorTelepon: e.target.value.replace(/[^0-9]/g, ""),
+                  });
                 }}
-                onClick={() => submitCampaign()}
-              >
-                Start Campaign
-              </Button>
+                width="100%"
+                value={campaign.NomorTelepon}
+                prefix="+62"
+              />
+              {/* <TextInput
+              label="Tanggal Selesai Kampanye"
+              placeholder="Tanggal Selesai Kampanye"
+              handleChange={(e) =>
+                setCampaign({
+                  ...campaign,
+                  TanggalSelesai: e.target.value,
+                })
+              }
+              date
+              width="100%"
+              value={campaign.TanggalSelesai}
+            /> */}
+              <TextInput
+                label="Target Modal"
+                // placeholder="Target Modal"
+                handleChange={(e) =>
+                  setCampaign({
+                    ...campaign,
+                    TargetModal: e.target.value
+                      .replace(/[^0-9]/g, "")
+                      .toString()
+                      .replaceAll(".", ""),
+                  })
+                }
+                width="100%"
+                value={campaign.TargetModal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                prefix="Rp."
+              />
+              <TextInput
+                label="Presentase Keuntungan"
+                placeholder="Presentase Keuntungan"
+                handleChange={(e) => {
+                  setCampaign({
+                    ...campaign,
+                    Presentase: e.target.value.replace(/[^0-9]/g, ""),
+                  });
+                }}
+                width="100%"
+                value={campaign.Presentase}
+                suffix="%"
+                // type="number"
+              />
+              <TextInput
+                label="Proposal/Profile Bisnis"
+                placeholder="Proposal/Profile Bisnis"
+                handleChange={(e) =>
+                  setCampaign({
+                    ...campaign,
+                    Proposal: e.target.result,
+                  })
+                }
+                width="100%"
+                value={campaign.Proposal}
+                file
+              />
+              <TextInput
+                label="Foto/Logo Bisnis"
+                placeholder="Foto/Logo Bisnis"
+                handleChange={(e) =>
+                  setCampaign({
+                    ...campaign,
+                    LogoBisnis: e.target.result,
+                  })
+                }
+                width="100%"
+                value={campaign.LogoBisnis}
+                file
+              />
+              <TextInput
+                label="Foto Identitas Pemilik Bisnis"
+                placeholder="Foto Identitas Pemilik Bisnis"
+                handleChange={(e) =>
+                  setCampaign({
+                    ...campaign,
+                    KTP: e.target.result,
+                  })
+                }
+                width="100%"
+                value={campaign.KTP}
+                file
+              />
+              <>
+                <span
+                  style={{
+                    fontSize: "1rem",
+                    color: "rgba(0,0,0,0.5)",
+                    alignSelf: "flex-start",
+                    marginTop: "20px",
+                    marginBottom: "20px",
+                  }}
+                >
+                  *Kampanye hanya dapat dibuat untuk 1 Bisnis, selama status kampanye masih berjalan
+                  maka user tidak dapat membuat kampanye
+                </span>
+              </>
+              <>
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: "#3D7EBB",
+                    width: "30%",
+                    borderRadius: "50px",
+                  }}
+                  onClick={() => submitCampaign()}
+                >
+                  Mulai Kampanye
+                </Button>
+              </>
             </Grid>
+            {/* <Grid
+            item
+            xs={12}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              variant="contained"
+              style={{
+                backgroundColor: "#3D7EBB",
+                width: "50%",
+                borderRadius: "50px",
+              }}
+              onClick={() => submitCampaign()}
+            >
+              Mulai Kampanye
+            </Button>
+          </Grid> */}
           </Grid>
-        </Paper>
+        )}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <CardCampaign />
-        <CardCampaign />
+        <CardCampaign statusCampign={statusCampign} />
       </TabPanel>
     </Box>
   );

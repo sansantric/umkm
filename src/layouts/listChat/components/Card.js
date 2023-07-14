@@ -13,18 +13,27 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import Grid from "@mui/material/Grid";
 import { Button } from "@mui/material";
-import { NavLink } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
 
 export default function CardRow(props) {
   const { datas } = props;
 
   // let harga = datas.harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  let defaultImage = 'https://static.vecteezy.com/system/resources/previews/004/705/198/original/store-icon-design-symbol-market-retail-building-storefront-for-ecommerce-free-vector.jpg';
+  let defaultImage =
+    "https://static.vecteezy.com/system/resources/previews/004/705/198/original/store-icon-design-symbol-market-retail-building-storefront-for-ecommerce-free-vector.jpg";
   let image = datas.image === null ? defaultImage : datas.image;
 
   return (
-    <NavLink to={`/chat/${datas.id}`} style={{ marginRight: "10px", width: "40%" }}> 
-      <Card sx={{ display: "flex", padding: "20px" }}>
+    <NavLink to={`/chat/${datas.id}`} style={{ width: "50%" }}>
+      <Card sx={{
+        display: "flex",
+        padding: "20px",
+        marginTop: "0.5rem",
+        marginBottom: "0.5rem",
+        boxShadow: "5px 5px 5px rgba(0,0,0,0.1)",
+        border: "1px solid rgba(0,0,0,0.1)",
+        backgroundColor: "rgba(0,0,0,0.05)",
+      }}>
         <Grid container>
           <Grid
             container
@@ -34,8 +43,10 @@ export default function CardRow(props) {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography variant="h5">{datas['0']??'-'}</Typography>
-            <Typography variant="subtitle">{datas.date} {datas.time}</Typography>
+            <Typography variant="h5">{datas["0"] ?? "-"}</Typography>
+            <Typography variant="subtitle">
+              {datas.date} {datas.time}
+            </Typography>
           </Grid>
         </Grid>
       </Card>

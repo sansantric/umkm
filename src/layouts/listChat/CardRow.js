@@ -37,23 +37,23 @@ export default function CardRow(props) {
         <Grid item xs={2}>
           <img
             src={`https://temanumkm.site/storage/${image[image.length - 1]}`}
-            style={{ width: "100%", borderRadius: "1rem" }}
+            style={{ width: "100%", borderRadius:"1rem" }}
           />
         </Grid>
         <Grid
           container
           item
           xs={10}
-          sx={{ flexDirection: "column", paddingLeft: "3rem", justifyContent: "space-between" }}
+          sx={{ flexDirection: "column", paddingLeft: "3rem", justifyContent:"space-between" }}
         >
           <div>
-            <Typography variant="h5">{posts.judul}</Typography>
-            <Typography variant="h6">Rp. {harga}</Typography>
-            {props.menu != "cart" ? (
-              <Typography variant="subtitle2">{posts.sub_judul}</Typography>
-            ) : (
-              ""
-            )}
+          <Typography variant="h5">{posts.judul}</Typography>
+          <Typography variant="h6">Rp. {harga}</Typography>
+          {props.menu != "cart" ? (
+            <Typography variant="subtitle2">{posts.sub_judul}</Typography>
+          ) : (
+            ""
+          )}
           </div>
           {props.menu != "cart" ? (
             <Button
@@ -67,20 +67,6 @@ export default function CardRow(props) {
             </Button>
           ) : (
             ""
-          )}
-          {props.menu == "cart" && (
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ borderRadius: "10px", width: "20%", marginTop: "20px" }}
-              onClick={() => {
-                dispatch({ type: "DELETE_CART", value: posts.id });
-                window.location.reload(true);
-              }}
-            >
-              Hapus
-            </Button>
           )}
         </Grid>
       </Grid>

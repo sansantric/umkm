@@ -1,8 +1,11 @@
 import { useState, useRef } from "react";
 import Button from "@mui/material/Button";
 import { useSelector, useDispatch } from "react-redux";
+import { Icon } from "@mui/material";
+import PropTypes from "prop-types";
 
-export default function FileInput() {
+export default function FileInput(props) {
+  const { handleChange } = props
   // FIles States
   const dispatch = useDispatch();
   const store = useSelector((store) => store.mainReducer);
@@ -14,7 +17,6 @@ export default function FileInput() {
 
   function previewFile(e) {
     // Reading New File (open file Picker Box)
-    console.log("1", e.target.files[0]);
     const reader = new FileReader();
 
     // Gettting Selected File (user can select multiple but we are choosing only one)
@@ -25,13 +27,16 @@ export default function FileInput() {
 
     // As the File loaded then set the stage as per the file type
     reader.onload = (readerEvent) => {
-      if (selectedFile.type.includes("image")) {
-        console.log(readerEvent.target.result);
-        dispatch({ type: "IMAGE", value: readerEvent.target.result });
-        setImagePreview(readerEvent.target.result);
-      } else if (selectedFile.type.includes("video")) {
-        setVideoPreview(readerEvent.target.result);
-      }
+      // console.log(readerEvent.target.result)
+      handleChange(readerEvent)
+      setImagePreview(e.target.files[0].name);
+      // if (selectedFile.type.includes("image")) {
+      //   // console.log(readerEvent.target.result);
+      //   // dispatch({ type: "IMAGE", value: readerEvent.target.result });
+      //   // setImagePreview(readerEvent.target.result);
+      // } else if (selectedFile.type.includes("video")) {
+      //   setVideoPreview(readerEvent.target.result);
+      // }
     };
   }
 
@@ -42,7 +47,13 @@ export default function FileInput() {
 
   return (
     <div>
-      <div className="btn-container">
+      <div
+        className="btn-container"
+        style={{
+          marginTop: "10px",
+          marginBottom: "10px",
+        }}
+      >
         <input
           ref={filePicekerRef}
           accept="image/*, video/*"
@@ -52,19 +63,26 @@ export default function FileInput() {
         />
 
         <Button
+          disableElevation
+          disableRipple
           variant="contained"
           style={{
             backgroundColor: "#E2E3E4",
             color: "#000",
-            margin: "10px",
             width: "100%",
-            borderRadius: "50px",
+            borderRadius: "10px",
           }}
           onClick={() => filePicekerRef.current.click()}
         >
-          Browse FIle
+          {
+            imagePreview ? imagePreview : "Browse File"
+          }
         </Button>
       </div>
     </div>
   );
 }
+
+FileInput.propTypes = {
+  handleChange: PropTypes.func,
+};

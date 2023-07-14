@@ -13,85 +13,101 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import Grid from "@mui/material/Grid";
 import { Button } from "@mui/material";
-import { NavLink } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
-export default function CardRow(props) {
-  const { datas } = props;
+export default function CardInvestasi(props) {
+  const { posts } = props;
   const dispatch = useDispatch();
   const store = useSelector((store) => store.mainReducer);
 
   // let harga = datas.harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  let defaultImage = 'https://static.vecteezy.com/system/resources/previews/004/705/198/original/store-icon-design-symbol-market-retail-building-storefront-for-ecommerce-free-vector.jpg';
-  let image = datas.image === null ? defaultImage : datas.image;
+  let defaultImage =
+    "https://static.vecteezy.com/system/resources/previews/004/705/198/original/store-icon-design-symbol-market-retail-building-storefront-for-ecommerce-free-vector.jpg";
+  let image = posts.image === null ? defaultImage : posts.image;
+  const TargetModal = posts
+    ? posts.target_funds.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    : 0;
+  const ModalTerkumpul = posts
+    ? posts.total_funds.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    : 0;
 
   return (
-    <Card sx={{ display: "flex", padding: "20px", margin: "10px" }}>
+    <Card
+      sx={{
+        display: "flex",
+        padding: "20px",
+        marginTop: "20px",
+        marginBottom: "20px",
+        boxShadow: "5px 5px 5px rgba(0,0,0,0.1)",
+        border: "1px solid rgba(0,0,0,0.1)",
+        backgroundColor: "rgba(0,0,0,0.05)",
+      }}
+    >
       <Grid container>
-        <Grid item xs={3}>
-          <img src={ `https://teman-umkm.website/storage/${image}` } style={{width: '200px'}} />
+        <Grid item xs={2}>
+          <img src={`https://temanumkm.site/storage/${image}`} style={{ width: "80%" }} />
         </Grid>
         <Grid
           container
           item
-          xs={8}
-          direction="column"
-          justifyContent="flex-start"
-          alignItems="flex-start"
+          xs={10}
+          sx={{ flexDirection: "column", paddingLeft: "3rem", justifyContent: "space-between" }}
         >
-          <Grid
-            container
-            xs={12}
+          <div>
+            <Typography variant="h3" sx={{ fontWeight: "bold" }}>
+              {posts.title}
+            </Typography>
+            <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}>
+              KEUNTUNGAN: {posts.profit}%
+            </Typography>
+            <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}>
+              Target Modal: Rp.{TargetModal}
+            </Typography>
+            <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}>
+              Sudah Terkumpul: Rp.{ModalTerkumpul}
+            </Typography>
+            {/* <br></br> */}
+            <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}>
+              Kategori Bisnis: {posts.kategori}
+            </Typography>
+            <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}>
+              Tanggal Selesai: {posts.end_date}
+            </Typography>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-around",
+              marginTop: "1rem",
+            }}
           >
-            <Grid 
-              container
-              item 
-              xs={6}
-              direction="column"
-              justifyContent="flex-start"
-              alignItems="flex-start"
-            >
-              <Typography variant="h3">{datas.title}</Typography>
-              <Typography variant="caption" style={{ marginTop: "10px", marginBottom: "10px", fontWeight: "400"}}>{datas.kategori}</Typography>
-            </Grid>
-            <Grid 
-              container
-              item 
-              xs={6}
-              direction="column"
-              justifyContent="flex-start"
-              alignItems="center"
-            >
-              <Typography variant="caption" >Laba yang akan anda dapatkan :</Typography>
+            <NavLink to={`/start-investing/chat/${posts.id}`} style={{ width: "45%" }}>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => dispatch({ type: "CART", value: post.id })}
-                style={{ marginTop: "10px"}}
+                style={{ borderRadius: "30px", width: "100%" }}
               >
-                {`Rp. ${datas.target_funds}/ Tahun`}
+                Mulai Chat
               </Button>
-            </Grid>
-            <Typography variant="caption" style={{ marginTop: "10px", marginBottom: "10px"}}>{datas.details}</Typography>
-            <Grid 
-              container
-              item 
-              xs={12}
-            >
-              <NavLink to={`/start-investing/chat/${datas.id}`} style={{ marginRight: "10px", width: "40%" }}>
-                <Button variant="contained" color="primary" style={{borderRadius: "30px", width: "100%"}}>Mulai Chat</Button>
-              </NavLink>
-              <NavLink to={`/start-investing/simulation/${datas.id}`} style={{ marginRight: "10px", width: "40%" }}> 
-                <Button variant="contained" color="primary" style={{borderRadius: "30px", width: "100%"}}>Mulai Investasi</Button>
-              </NavLink>
-            </Grid>
-          </Grid>
+            </NavLink>
+            <NavLink to={`/start-investing/invest/${posts.id}`} style={{ width: "45%" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ borderRadius: "30px", width: "100%" }}
+              >
+                Mulai Investasi
+              </Button>
+            </NavLink>
+          </div>
         </Grid>
       </Grid>
     </Card>
   );
 }
-CardRow.propTypes = {
-  datas: PropTypes.object,
+CardInvestasi.propTypes = {
+  posts: PropTypes.object,
   menu: PropTypes.string,
 };

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -26,239 +26,309 @@ import logo from "assets/images/logo.png";
 // Image
 import loginImg from "assets/images/login.png";
 import { useDispatch } from "react-redux";
+import axios from "axios";
 
 function Login() {
-    const dispatch = useDispatch();
-    const [userInfo, setUserinfo] = useState({
-        email: "",
-        password: "",
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [userInfo, setUserinfo] = useState({
+    email: "",
+    password: "",
+  });
+  const [userInfoRegis, setUserinfoRegis] = useState({
+    nama: "",
+    no_hp: "",
+    alamat: "",
+    email: "",
+    tipe_akun: "admin",
+    password: "",
+  });
+  const [status, setStatus] = useState("login");
+
+  const handleNama = (val) => setUserinfoRegis({ ...userInfoRegis, nama: val });
+  const handleHp = (val) => setUserinfoRegis({ ...userInfoRegis, no_hp: val });
+  const handleAlamat = (val) => setUserinfoRegis({ ...userInfoRegis, alamat: val });
+  const handleEmailRegis = (val) => setUserinfoRegis({ ...userInfoRegis, email: val });
+  const handlePasswordRegis = (val) => setUserinfoRegis({ ...userInfoRegis, password: val });
+  const restUserInfoRegis = () =>
+    setUserinfoRegis({
+      nama: "",
+      no_hp: "",
+      alamat: "",
+      email: "",
+      tipe_akun: "Admin",
+      password: "",
+    });
+
+  const handleEmail = (val) => setUserinfo({ ...userInfo, email: val });
+  const handlePassword = (val) => setUserinfo({ ...userInfo, password: val });
+  const restUserInfo = () =>
+    setUserinfo({
+      email: "",
+      password: "",
+    });
+
+  const statusSignUp = () => {
+    setStatus("login");
+  };
+  const statusSignIn = () => {
+    setStatus("regis");
+  };
+
+  const handleSignIn = async () => {
+    dispatch({ type: "LOADING", value: true });
+    let data = JSON.stringify(userInfo);
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://api.temanumkm.site/api/login",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        dispatch({ type: "USER", value: response.data.user });
+        dispatch({ type: "LOADING", value: false });
+        restUserInfo();
+        navigate("/admin/dashboard");
+      })
+      .catch((error) => {
+        dispatch({ type: "LOADING", value: false });
+        dispatch({ type: "ALERT", value: true });
+        dispatch({ type: "STATUS", value: "error" });
+        dispatch({ type: "MESSAGE", value: error.response.data.error });
+        console.log(error.response.data.error);
       });
-    const [userInfoRegis, setUserinfoRegis] = useState({
-        nama: "",
-        no_hp: "",
-        alamat: "",
-        email: "",
-        tipe_akun: "admin",
-        password: "",
-    });
-    const [status, setStatus] = useState("login");
-    
-    const handleNama = (val) => setUserinfoRegis({ ...userInfoRegis, nama: val });
-    const handleHp = (val) => setUserinfoRegis({ ...userInfoRegis, no_hp: val });
-    const handleAlamat = (val) => setUserinfoRegis({ ...userInfoRegis, alamat: val });
-    const handleEmailRegis = (val) => setUserinfoRegis({ ...userInfoRegis, email: val });
-    const handlePasswordRegis = (val) => setUserinfoRegis({ ...userInfoRegis, password: val });
-    const restUserInfoRegis = () =>
-        setUserinfo({
-            nama: "",
-            no_hp: "",
-            alamat: "",
-            email: "",
-            tipe_akun: "",
-            password: "",
-    });
+  };
 
-    const handleEmail = (val) => setUserinfo({ ...userInfo, email: val });
-    const handlePassword = (val) => setUserinfo({ ...userInfo, password: val });
-    const restUserInfo = () =>
-        setUserinfo({
-            email: "", 
-            password: "",
-        });
+  const handleSucces = () => {
+    dispatch({ type: "MODAL", value: true });
+    setTimeout(() => {
+      dispatch({ type: "MODAL", value: false });
+    }, 3000);
+  };
+  const handleSignup = async () => {
+    dispatch({ type: "LOADING", value: true });
+    let data = JSON.stringify(userInfoRegis);
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://api.temanumkm.site/api/register",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        restUserInfoRegis();
+        dispatch({ type: "LOADING", value: false });
+        handleSucces();
+        setStatus("login");
+      })
+      .catch((error) => {
+        console.error(error);
+        dispatch({ type: "LOADING", value: false });
+        dispatch({ type: "ALERT", value: true });
+        dispatch({ type: "STATUS", value: "error" });
+        dispatch({ type: "MESSAGE", value: "Registrasi Failed" });
+      });
+  };
 
-    const statusSignUp = () => {
-        setStatus("regis")
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (status == "login") {
+      handleSignIn();
+    } else {
+      handleSignup();
     }
-    const statusSignIn = () => {
-        setStatus("login")
-    }
+  };
 
-    const handleSignIn = async () => {
-        dispatch({ type: "LOADING", value: true})
-        let data = JSON.stringify(userInfo);
-        let config = {
-            method: "post",
-            maxBodyLength: Infinity,
-            url: "https://teman-umkm.website/api/login",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            data: data,
-        };
-        console.debug(data);
-        axios
-            .request(config)
-            .then((response) => {
-                console.debug(JSON.stringify(response.data));
-                localStorage.setItem("token", response.data.token);
-                dispatch({ type: "USER", value: response.data.user })
-                restUserInfo();
-                dispatch({ type: "LOADING", value: false})
-                navigate("/wp-admin/dashboard");
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }
-
-    const handleSignup = async () => {
-        dispatch({ type: "LOADING", value: true})
-        let data = JSON.stringify(userInfoRegis);
-        let config = {
-          method: "post",
-          maxBodyLength: Infinity,
-          url: "https://teman-umkm.website/api/register",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          data: data,
-        };
-        console.debug(data);
-        axios
-          .request(config)
-          .then((response) => {
-            console.debug(JSON.stringify(response.data));
-            restUserInfoRegis();
-            dispatch({ type: "LOADING", value: false})
-          })
-          .catch((error) => {
-            console.error(error);
-            dispatch({ type: "LOADING", value: false})
-            dispatch({ type: "ALERT", value: true });
-            dispatch({ type: "STATUS", value: "error" });
-            dispatch({ type: "MESSAGE", value: "Registrasi Failed" });
-          });
-      };
- 
   return (
-    <PageLayout>
-      <Box sx={{ flexGrow: 2, marginTop: "50px", marginLeft: "100px", marginRight: "100px" }}>
-        <Grid container rowSpacing={10} columnSpacing={10}>
-          <Grid item container direction="row" justifyContent="center" alignItems="center" sx={{marginBottom: "50px"}}>
-            <img src={logo} />
-          </Grid>
-          {status === "login" ? 
+    <div style={{ width: "100%", height: "100%" }}>
+      <form onSubmit={handleSubmit} tabIndex={-1}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "40%",
+            bgcolor: "white",
+            // border: '1px solid rgba(0,0,0,0.7)',
+            //   boxShadow: 24,
+          }}
+        >
+          <Grid container>
             <Grid
+              item
+              container
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              sx={{ marginBottom: "10px" }}
+            >
+              <img src={logo} />
+            </Grid>
+            {status === "login" ? (
+              <Grid
                 container
                 style={{
-                    backgroundColor: "#ffffff",
-                    borderRadius: "20px",
+                  backgroundColor: "#ffffff",
+                  borderRadius: "20px",
                 }}
-                >
-                <Grid item xs={5} container justifyContent="center" alignItems="center">
-                    <img src={loginImg} />
-                </Grid>
-                <Grid item xs={7}>
-                    <Box
+              >
+                <Grid item xs={12}>
+                  <Box
                     sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        backgroundColor: "#3D7EBB",
-                        padding: "20px",
-                        paddingTop: "70",
-                        paddingBottom: "70px",
-                        borderRadius: "20px",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        alignContent: "center",
+                      display: "flex",
+                      flexDirection: "column",
+                      backgroundColor: "#3D7EBB",
+                      padding: "10px",
+                      borderRadius: "20px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      alignContent: "center",
+                      paddingLeft: "100px",
+                      paddingRight: "100px",
                     }}
-                    >
-                        <Typography variant="h3" style={{ color: "#ffffff", margin: "30px" }}>
-                        Login Admin
+                  >
+                    <Typography variant="h3" style={{ color: "#ffffff", margin: "10px" }}>
+                      Login Admin
                     </Typography>
-                    <TextInput placeholder="Email" handleChange={(e) => handleEmail(e.target.value)} width="100%" 
-                value={userInfo.email}/>
-                    <TextInput placeholder="Password" handleChange={(e) => handlePassword(e.target.value)} type="password" width="100%" 
-                value={userInfo.password}/>
-                    
+                    <TextInput
+                      placeholder="Email"
+                      handleChange={(e) => handleEmail(e.target.value)}
+                      width="100%"
+                      value={userInfo.email}
+                    />
+                    <TextInput
+                      placeholder="Password"
+                      handleChange={(e) => handlePassword(e.target.value)}
+                      type="password"
+                      width="100%"
+                      value={userInfo.password}
+                      icon
+                      suffix="true"
+                    />
+
                     <Button
-                        variant="contained"
-                        style={{ backgroundColor: "#E2E3E4", color: "#000", margin: "10px", width: "20%", marginBottom: "50px"}}
-                        onClick={handleSignIn}
+                      type="submit"
+                      variant="contained"
+                      style={{
+                        backgroundColor: "#E2E3E4",
+                        color: "#000",
+                        margin: "10px",
+                        width: "20%",
+                      }}
+                      onClick={handleSignIn}
                     >
-                        Masuk
+                      Masuk
                     </Button>
-                    <Link href="#" style={{textDecoration: "underline", marginBottom: "20px", color: '#fff'}} onClick={statusSignIn} >Belum Memiliki Akun?</Link>
-                    </Box>
+                    <Link
+                      href="#"
+                      style={{ textDecoration: "underline", color: "#fff" }}
+                      onClick={statusSignIn}
+                    >
+                      Belum Memiliki Akun?
+                    </Link>
+                  </Box>
                 </Grid>
-            </Grid> 
-            :
-            <Grid
+              </Grid>
+            ) : (
+              <Grid
                 container
                 style={{
-                    backgroundColor: "#ffffff",
-                    borderRadius: "20px",
+                  backgroundColor: "#ffffff",
+                  borderRadius: "20px",
                 }}
-                justifyContent="center" alignItems="center"
-                >
-            <Grid item xs={7}>
-                <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    backgroundColor: "#3D7EBB",
-                    padding: "20px",
-                    borderRadius: "20px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    alignContent: "center",
-                }}
-                >
-                <Typography variant="h3" style={{ color: "#ffffff", margin: "30px" }}>
-                    Daftar
-                </Typography>
-                <TextField
-                    id="outlined-basic"
-                    placeholder="Nama Lengkap"
-                    variant="outlined"
-                    style={{ width: "80%", margin: "10px" }}
-                    onChange={(e) => handleNama(e.target.value)}
-                />
-                <TextField
-                    id="outlined-basic"
-                    placeholder="Nomor Telepon"
-                    variant="outlined"
-                    style={{ width: "80%", margin: "10px" }}
-                    onChange={(e) => handleHp(e.target.value)}
-                />
-                <TextField
-                    id="outlined-basic"
-                    placeholder="Alamat Bisnis"
-                    variant="outlined"
-                    style={{ width: "80%", margin: "10px" }}
-                    onChange={(e) => handleAlamat(e.target.value)}
-                />
-                <TextField
-                    id="outlined-basic"
-                    placeholder="Email"
-                    variant="outlined"
-                    color="primary"
-                    style={{ width: "80%", margin: "10px" }}
-                    onChange={(e) => handleEmailRegis(e.target.value)}
-                />
-                <TextField
-                    id="outlined-basic"
-                    placeholder="Password"
-                    type="password"
-                    variant="outlined"
-                    style={{ width: "80%", margin: "10px" }}
-                    onChange={(e) => handlePasswordRegis(e.target.value)}
-                />
-                <Button
-                    variant="contained"
-                    style={{ backgroundColor: "#E2E3E4", color: "#000", margin: "20px", width: "20%"}}
-                    onClick={handleSignup}
-                >
-                    Daftar
-                </Button>
-                <Link href="#" style={{textDecoration: "underline", marginBottom: "20px", color: '#fff'}} onClick={statusSignUp} >Sudah Punya Akun?</Link>
-                </Box>
-            </Grid>
-            </Grid>
-        }
-        </Grid>
-      </Box>
-    </PageLayout>
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      backgroundColor: "#3D7EBB",
+                      padding: "10px",
+                      paddingLeft: "100px",
+                      paddingRight: "100px",
+                      borderRadius: "20px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      alignContent: "center",
+                    }}
+                  >
+                    <Typography variant="h3" style={{ color: "#ffffff", margin: "10px" }}>
+                      Daftar
+                    </Typography>
+                    <TextInput
+                      placeholder="Nama Lengkap"
+                      handleChange={(e) => handleNama(e.target.value)}
+                      width="100%"
+                      value={userInfoRegis.nama}
+                    />
+                    <TextInput
+                      placeholder="Nomor Telepon"
+                      handleChange={(e) => handleHp(e.target.value)}
+                      width="100%"
+                      value={userInfoRegis.no_hp}
+                    />
+                    <TextInput
+                      placeholder="Alamat"
+                      handleChange={(e) => handleAlamat(e.target.value)}
+                      width="100%"
+                      value={userInfoRegis.alamat}
+                    />
+                    <TextInput
+                      placeholder="Email"
+                      handleChange={(e) => handleEmailRegis(e.target.value)}
+                      width="100%"
+                      value={userInfoRegis.email}
+                    />
+                    <TextInput
+                      placeholder="Password"
+                      handleChange={(e) => handlePasswordRegis(e.target.value)}
+                      width="100%"
+                      type="password"
+                      value={userInfoRegis.password}
+                      icon
+                      suffix="true"
+                    />
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      style={{
+                        backgroundColor: "#E2E3E4",
+                        color: "#000",
+                        margin: "10px",
+                        width: "20%",
+                      }}
+                      onClick={handleSignup}
+                    >
+                      Daftar
+                    </Button>
+                    <Link
+                      href="#"
+                      style={{ textDecoration: "underline", color: "#fff" }}
+                      onClick={statusSignUp}
+                    >
+                      Sudah Punya Akun?
+                    </Link>
+                  </Box>
+                </Grid>
+              </Grid>
+            )}
+          </Grid>
+        </Box>
+      </form>
+    </div>
   );
 }
 

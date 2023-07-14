@@ -26,7 +26,6 @@ function SignOut() {
   useEffect(() => {
     // setIsLogin(dispatch, false)
     // localStorage.removeItem("token");
-    // console.log('aa')
   }, [isLoggin]);
 
   return (

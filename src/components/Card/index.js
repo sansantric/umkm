@@ -34,10 +34,10 @@ export default function MediaCard() {
           PT Kaliurang Bumi Lestari
         </Typography>
         <Typography variant="body2" color="#000">
-            Total Pendanaan :
+          Total Pendanaan :
         </Typography>
         <Typography gutterBottom variant="h4" component="div">
-            Rp. 700.000.000,00
+          Rp. 700.000.000,00
         </Typography>
       </CardContent>
       <CardActions
@@ -48,7 +48,12 @@ export default function MediaCard() {
           alignContent: "center",
         }}
       >
-        <Button size="medium" variant="contained" style={{ width: "80%" }} onClick={()=> dispatch({ type: "CART", value: val })} >
+        <Button
+          size="medium"
+          variant="contained"
+          style={{ width: "80%" }}
+          onClick={() => dispatch({ type: "CART", value: val })}
+        >
           Mulai Investasi
         </Button>
       </CardActions>

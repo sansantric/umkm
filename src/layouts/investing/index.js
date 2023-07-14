@@ -47,54 +47,74 @@ import OrderOverview from "layouts/dashboard/components/OrderOverview";
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
 import image7 from "assets/images/image7.png";
+import PaginationCard from "components/Card/PaginationCard";
 import factory from "assets/images/factory.png";
 
 import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 
+import TabsInvestor from "components/Tabs/TabsInvestor"
+
 function Investing() {
   const dispatch = useDispatch();
   const store = useSelector((store) => store.mainReducer);
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState();
 
-  React.useEffect(() => {
-    const fetchData = async () => {      
-      dispatch({ type: "LOADING", value: true })
-      let token = localStorage.getItem("token");
-      let config = {
-        method: "get",
-        url: "https://teman-umkm.website/api/funds",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      axios
-        .request(config)
-        .then((response) => {
-          setData(response.data.message);
-          dispatch({ type: "LOADING", value: false })
-        })
-        .catch((error) => {
-          dispatch({ type: "LOADING", value: false })
-          console.log(error);
-        });
-    };
-    
-    fetchData();
-  }, []);
+  // React.useEffect(() => {
+  //   const fetchData = async () => {
+  //     dispatch({ type: "LOADING", value: true });
+  //     let token = localStorage.getItem("token");
+  //     let config = {
+  //       method: "get",
+  //       url: "https://api.temanumkm.site/api/funds",
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     };
+  //     axios
+  //       .request(config)
+  //       .then((response) => {
+  //         setData(response.data.message);
+  //         dispatch({ type: "LOADING", value: false });
+  //       })
+  //       .catch((error) => {
+  //         dispatch({ type: "LOADING", value: false });
+  //         console.log(error);
+  //       });
+  //   };
 
+  //   fetchData();
+  // }, []);
   return (
     <DashboardLayout>
       <Box sx={{ flexGrow: 1, margin: "30px" }}>
         <Grid container>
-          <Box sx={{ width: "100%" }}>
-            { 
-              data.map((items, i) => { 
-                return <Card key={i} datas={items} />
-                })
-            }
-          </Box>
+          <Grid
+            item
+            xs={12}
+            container
+            // columnSpacing={10}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Typography variant="h4">Mulai Investasi</Typography>
+          </Grid>
+          <Grid item xs={1} />
+          <Grid
+            item
+            xs={10}
+            container
+            // columnSpacing={10}
+            justifyContent="center"
+            alignItems="center"
+            paddingTop="1rem"
+            paddingBottom="1rem"
+          >
+            
+            <TabsInvestor />
+          </Grid>
+          <Grid item xs={1} />
         </Grid>
       </Box>
     </DashboardLayout>

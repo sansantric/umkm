@@ -33,19 +33,19 @@ const contained = {
     boxShadow: buttonBoxShadow.main,
     padding: `${pxToRem(12)} ${pxToRem(24)}`,
 
-    "&:hover": {
-      backgroundColor: white.main,
-      boxShadow: buttonBoxShadow.stateOf,
-    },
+    // "&:hover": {
+    //   backgroundColor: white.main,
+    //   boxShadow: buttonBoxShadow.stateOf,
+    // },
 
-    "&:focus": {
-      boxShadow: buttonBoxShadow.stateOf,
-    },
+    // "&:focus": {
+    //   boxShadow: buttonBoxShadow.stateOf,
+    // },
 
-    "&:active, &:active:focus, &:active:hover": {
-      opacity: 0.85,
-      boxShadow: buttonBoxShadow.stateOf,
-    },
+    // "&:active, &:active:focus, &:active:hover": {
+    //   opacity: 0.85,
+    //   boxShadow: buttonBoxShadow.stateOf,
+    // },
 
     "&:disabled": {
       boxShadow: buttonBoxShadow.main,
@@ -80,26 +80,27 @@ const contained = {
     backgroundColor: info.main,
 
     "&:hover": {
-      backgroundColor: info.main,
+      backgroundColor: "rgba(0,0,0,0.3)",
+      color: "black"
     },
 
-    "&:focus:not(:hover)": {
-      backgroundColor: info.focus,
-      boxShadow: buttonBoxShadow.stateOfNotHover,
-    },
+    // "&:focus:not(:hover)": {
+    //   backgroundColor: info.focus,
+    //   boxShadow: buttonBoxShadow.stateOfNotHover,
+    // },
   },
 
   secondary: {
     backgroundColor: secondary.main,
 
-    "&:hover": {
-      backgroundColor: secondary.main,
-    },
+    // "&:hover": {
+    //   backgroundColor: secondary.main,
+    // },
 
-    "&:focus:not(:hover)": {
-      backgroundColor: secondary.focus,
-      boxShadow: buttonBoxShadow.stateOfNotHover,
-    },
+    // "&:focus:not(:hover)": {
+    //   backgroundColor: secondary.focus,
+    //   boxShadow: buttonBoxShadow.stateOfNotHover,
+    // },
   },
 };
 

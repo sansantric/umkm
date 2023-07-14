@@ -60,8 +60,7 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
-  const [role, setRole] = useState([])
-
+  const [role, setRole] = useState([]);
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -91,7 +90,7 @@ export default function App() {
     const login = localStorage.getItem("token");
     if (login) {
       // setIsLogin(dispatch, login);
-      dispatch({ type: "LOGIN", value: login })
+      dispatch({ type: "LOGIN", value: login });
     }
   }, [direction]);
 
@@ -100,20 +99,16 @@ export default function App() {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
-  useEffect(() => {
-    if (user) {
-      setRole(user.tipe_akun)
-    }
-  }, []);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
       if (route.collapse) {
         return getRoutes(route.collapse);
       }
-
-      if (route.route && role.includes(user.tipe_akun)) {
-        return <Route exact path={route.route} element={route.component} key={route.key} />;
+      if (user) {
+        if (route.route && route.role.includes(user.tipe_akun)) {
+          return <Route exact path={route.route} element={route.component} key={route.key} />;
+        }
       }
 
       return null;
@@ -153,31 +148,31 @@ export default function App() {
       <ModalSucces />
       <DashboardNavbar />
       <>
-        <Sidenav
+        {/* <Sidenav
           color={sidenavColor}
           brand={brand}
           brandName="UMKM Nama"
           routes={listRoutes}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
-        />
+        /> */}
         <Routes>
           {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path="*" element={<Navigate to="/home" />} />
         </Routes>
       </>
       <Footer />
     </ThemeProvider>
-  ) : pathname === "/wp-admin" ? (
+  ) : pathname === "/admin" ? (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Loading />
       <Alert />
       <ModalSucces />
       <LoginAdmin />
-      <Footer />
+      {/* <Footer /> */}
     </ThemeProvider>
-  ) : pathname === "/wp-admin/dashboard" ? (
+  ) : pathname === "/admin/dashboard" ? (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Loading />

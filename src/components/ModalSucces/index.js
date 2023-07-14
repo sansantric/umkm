@@ -7,6 +7,8 @@ import chatSuccess from "assets/images/chat_success.png";
 import chatFailed from "assets/images/chat_failed.png";
 import checkoutSuccess from "assets/images/checkoutSuccess.png";
 import CampaignSuccess from "assets/images/campaign_success.png";
+import invest_success from "assets/images/invest_success.png"
+import pencairan_modal from "assets/images/invest_success.png"
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -26,7 +28,11 @@ export default function ModalSuccess() {
       return <img src={chatFailed} style={{height: '400px'}} />
     }else if (modalType == 'campaignSuccess') {
       return <img src={CampaignSuccess} style={{height: '400px'}} />
-    }else {        
+    }else if (modalType == 'investSuccess') {
+      return <img src={invest_success} style={{height: '400px'}} />
+    }else if (modalType == 'pencairanModal') {
+      return <img src={pencairan_modal} style={{height: '400px'}} />
+    }else {
       return <img src={success} style={{height: '400px'}} />
     }
   };

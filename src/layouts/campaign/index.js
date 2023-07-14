@@ -54,7 +54,35 @@ function Campaign() {
 
   return (
     <DashboardLayout>
-      <Box sx={{ flexGrow: 1, margin: "30px" }}>
+    <Box sx={{ flexGrow: 1, margin: "30px" }}>
+      <Grid container>
+        <Grid
+          item
+          xs={12}
+          container
+          columnSpacing={10}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Typography variant="h4">Mulai Bisnis</Typography>
+        </Grid>
+        <Grid item xs={1} />
+        <Grid
+          item
+          xs={10}
+          container
+          columnSpacing={10}
+          justifyContent="center"
+          alignItems="center"
+          paddingTop="1rem"
+          paddingBottom="1rem"
+        >
+          <TabsCampaign />
+        </Grid>
+        <Grid item xs={1} />
+      </Grid>
+    </Box>
+      {/* <Box sx={{ flexGrow: 1, margin: "30px" }}>
         <Grid container>
           <Grid item xs={1} />
           <Grid
@@ -71,7 +99,7 @@ function Campaign() {
           </Grid>
           <Grid item xs={1} />
         </Grid>
-      </Box>
+      </Box> */}
     </DashboardLayout>
   );
 }

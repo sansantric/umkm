@@ -44,7 +44,7 @@ import OrderOverview from "layouts/dashboard/components/OrderOverview";
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
-import image7 from "assets/images/image7.png";
+import nocart from "assets/images/nocart.png";
 
 import Box from "@mui/material/Box";
 import { Typography, TextField, Card, CardContent } from "@mui/material";
@@ -59,7 +59,7 @@ function Cart() {
   const dispatch = useDispatch();
   const store = useSelector((store) => store.mainReducer);
   const { cart, user } = store;
-  const [items, setItems] = React.useState([]);
+  const [items, setItems] = React.useState();
   const [isCheckout, setIsCheckout] = React.useState(false);
   const [hp, setHp] = React.useState();
   const [email, setEmail] = React.useState();
@@ -70,7 +70,7 @@ function Cart() {
   };
 
   const handleSelesai = () => {
-    dispatch({ type: "LOADING", value: true })
+    dispatch({ type: "LOADING", value: true });
     let token = localStorage.getItem("token");
     let id = [];
     cart.map((item, i) => {
@@ -86,58 +86,55 @@ function Cart() {
     });
     let config = {
       method: "post",
-      url: "https://teman-umkm.website/api/order",
+      url: "https://api.temanumkm.site/api/order",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       data: data,
     };
-    console.log(id);
     axios
       .request(config)
       .then((response) => {
         setItems(response.data.data);
-        dispatch({ type: "LOADING", value: false })
-        dispatch({ type: "RIWAYAT", value: true })
-        dispatch({ type: "RESET_CART"})
+        dispatch({ type: "LOADING", value: false });
+        dispatch({ type: "RIWAYAT", value: true });
+        dispatch({ type: "RESET_CART" });
         navigate("/article");
       })
       .catch((error) => {
-        dispatch({ type: "LOADING", value: false })
+        dispatch({ type: "LOADING", value: false });
         console.log(error);
       });
   };
 
-  //teman-umkm.website/api/order
+  //api.temanumkm.site/api/order
 
-  https: React.useEffect(() => {
+  React.useEffect(() => {
     // fetch data
     const dataFetch = async () => {
-      dispatch({ type: "LOADING", value: true })
+      dispatch({ type: "LOADING", value: true });
       let token = localStorage.getItem("token");
       let data = JSON.stringify({
         id: cart,
       });
       let config = {
         method: "post",
-        url: "https://teman-umkm.website/api/cart",
+        url: "https://api.temanumkm.site/api/cart",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         data: data,
       };
-      console.log(data);
       axios
         .request(config)
         .then((response) => {
           setItems(response.data.data);
-          dispatch({ type: "LOADING", value: false })
-          console.log(JSON.stringify(response.data));
+          dispatch({ type: "LOADING", value: false });
         })
         .catch((error) => {
-          dispatch({ type: "LOADING", value: false })
+          dispatch({ type: "LOADING", value: false });
           console.log(error);
         });
     };
@@ -146,25 +143,43 @@ function Cart() {
   return (
     <DashboardLayout>
       <Box sx={{ flexGrow: 1, margin: "30px" }}>
-        <Grid container>
-          <Grid
-            item
-            xs={12}
-            container
-            columnSpacing={10}
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Typography variant="h2">Cart</Typography>
+        {items ? (
+          <>
+            <Grid container>
+              <Grid
+                item
+                xs={12}
+                container
+                columnSpacing={10}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Typography variant="h2">Cart</Typography>
+              </Grid>
+            </Grid>
+            <Box sx={{ flexGrow: 1, margin: "50px" }}>
+              {items.map((item, i) => {
+                return <CardRow key={i} posts={item} menu={"cart"} />;
+              })}
+            </Box>
+          </>
+        ) : (
+          <Grid container>
+            <Grid
+              item
+              xs={12}
+              container
+              columnSpacing={10}
+              justifyContent="center"
+              alignItems="center"
+              height="70vh"
+            >
+              <img src={nocart} style={{ width: "20%" }} />
+            </Grid>
           </Grid>
-        </Grid>
-        <Box sx={{ flexGrow: 1, margin: "50px" }}>
-          {items.map((item, i) => {
-            return <CardRow key={i} posts={item} menu={"cart"} />;
-          })}
-        </Box>
+        )}
         {/* cart */}
-        {!isCheckout && (
+        {!isCheckout && items && (
           <Box sx={{ flexGrow: 1, margin: "50px" }}>
             <Box
               style={{

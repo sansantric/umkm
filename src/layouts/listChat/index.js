@@ -47,7 +47,7 @@ import OrderOverview from "layouts/dashboard/components/OrderOverview";
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
-import image7 from "assets/images/image7.png";
+import nochat from "assets/images/nochat.png";
 import factory from "assets/images/factory.png";
 
 import Box from "@mui/material/Box";
@@ -59,11 +59,11 @@ function listChat() {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      dispatch({ type: "LOADING", value: true })
+      dispatch({ type: "LOADING", value: true });
       let token = localStorage.getItem("token");
       let config = {
         method: "get",
-        url: "https://teman-umkm.website/api/chats",
+        url: "https://api.temanumkm.site/api/chats",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -72,54 +72,63 @@ function listChat() {
         .request(config)
         .then((response) => {
           setData(response.data.message);
-          dispatch({ type: "LOADING", value: false })
+          dispatch({ type: "LOADING", value: false });
         })
         .catch((error) => {
-          dispatch({ type: "LOADING", value: false })
+          dispatch({ type: "LOADING", value: false });
           console.log(error);
         });
     };
-    
+
     fetchData();
   }, []);
 
   return (
     <DashboardLayout>
-      <Box sx={{ flexGrow: 1, margin: "30px" }}>
+      <Box sx={{ flexGrow: 1, margin: "1rem", height: "75vh" }}>
         <Grid container>
-          {
-            data.length === 0 ? 
-              <Grid 
-                container 
+          {data.length === 0 ? (
+            <Grid
+              item
+              xs={12}
+              container
+              columnSpacing={10}
+              justifyContent="center"
+              alignItems="center"
+            >
+              <img src={nochat} style={{ width: "20%" }} />
+            </Grid>
+          ) : (
+            <>
+              <Grid
+                container
                 xs={12}
                 direction="row"
                 justifyContent="center"
                 alignItems="center"
-                style={{ "marginBottom" : "150px" }}
+                marginBottom="2rem"
               >
-                <Typography variant="h3">No Message</Typography>
+                <Typography variant="h3">Chat List</Typography>
               </Grid>
-            :
-              <>
-                <Grid 
-                  container 
-                  xs={12}
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <Typography variant="h3">Chat List</Typography>
-                </Grid>
-                <Box sx={{ width: "100%" }}>
-                  { 
-                    data.length > 1 ? 
-                        data.map((items, i) => (<Card key={i} datas={items} />))
-                      :
-                        <Card datas={data} />
-                  }
-                </Box>
-              </>
-          }
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {data.map((items, i) => (
+                  <Card key={i} datas={items} />
+                ))}
+                {/* {data.length > 1 ? (
+                ) : (
+                  <Card datas={data} />
+                )} */}
+              </Box>
+            </>
+          )}
         </Grid>
       </Box>
     </DashboardLayout>

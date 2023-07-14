@@ -9,10 +9,10 @@ import UnfoldMoreRoundedIcon from "@mui/icons-material/UnfoldMoreRounded";
 export default function Dropdown(props) {
   const { list, handleOnChange } = props;
   return (
-    <CustomSelect defaultValue={1} onChange={(e) => handleOnChange(e)} >
+    <CustomSelect defaultValue={0} onChange={(e) => handleOnChange(e)} >
       {list.map((item, index) => {
         return (
-          <StyledOption key={index} value={item.value}  >
+          <StyledOption key={index} value={item.value} disabled={item.value === 0 ? true : false} >
             {item.name}
           </StyledOption>
         );
@@ -29,7 +29,7 @@ const CustomSelect = React.forwardRef(function CustomSelect(props, ref) {
     ...props.slots,
   };
 
-  return <Select {...props} ref={ref} slots={slots} />;
+  return <Select placeholder="Test" {...props} ref={ref} slots={slots} />;
 });
 Dropdown.propTypes = {
   list: PropTypes.array,
@@ -118,10 +118,9 @@ Button.propTypes = {
 const StyledButton = styled(Button, { shouldForwardProp: () => true })(
   ({ theme }) => `
   font-family: IBM Plex Sans, sans-serif;
-  font-size: 0.875rem;
+  font-size: 1rem;
   box-sizing: border-box;
-  width: 90%;
-  margin: 10px;
+  width: 100%;
   min-height: calc(1.5em + 22px);
   min-width: 320px;
   padding: 12px;
@@ -160,7 +159,7 @@ const StyledButton = styled(Button, { shouldForwardProp: () => true })(
 const StyledListbox = styled("ul")(
   ({ theme }) => `
   font-family: IBM Plex Sans, sans-serif;
-  font-size: 0.875rem;
+  font-size: 1rem;
   box-sizing: border-box;
   padding: 6px;
   margin: 12px 0;

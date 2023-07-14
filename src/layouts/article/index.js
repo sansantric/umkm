@@ -64,7 +64,7 @@ function Article() {
             justifyContent="center"
             alignItems="center"
           >
-            <Typography variant="h2">Article</Typography>
+            <Typography variant="h4">Article</Typography>
           </Grid>
           <Grid item xs={1} />
           <Grid
@@ -74,8 +74,8 @@ function Article() {
             columnSpacing={10}
             justifyContent="center"
             alignItems="center"
-            paddingTop="50px"
-            paddingBottom="50px"
+            paddingTop="1rem"
+            paddingBottom="1rem"
           >
             <Tabs />
           </Grid>

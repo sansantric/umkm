@@ -100,17 +100,15 @@ function SignUp() {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://teman-umkm.website/api/register",
+      url: "https://api.temanumkm.site/api/register",
       headers: {
         "Content-Type": "application/json",
       },
       data: data,
     };
-    console.log(data);
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
         handleClose();
         restUserInfo();
         dispatch({ type: "LOADING", value: false });
@@ -123,6 +121,12 @@ function SignUp() {
         dispatch({ type: "STATUS", value: "error" });
         dispatch({ type: "MESSAGE", value: "Registrasi Failed" });
       });
+  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    handleSignup();
+    // You should see email and password in console.
+    // ..code to submit form to backend here...
   };
 
   const style = {
@@ -143,6 +147,7 @@ function SignUp() {
       open={isSignUp}
       onClose={handleClose}
     >
+    <form onSubmit={handleSubmit}>
       <Box sx={style}>
         <Grid
           container
@@ -152,7 +157,7 @@ function SignUp() {
           }}
         >
           <Grid item xs={5} container justifyContent="center" alignItems="center">
-            <img src={undraw} />
+            <img src={undraw} style={{width: "90%"}} />
             {/* <Box sx={{display: 'flex', backgroundColor: '#ffffff', padding: '10px', borderTopLeftRadius: '5px', borderBottomLeftRadius: '5px',justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
               
             </Box> */}
@@ -163,7 +168,8 @@ function SignUp() {
                 display: "flex",
                 flexDirection: "column",
                 backgroundColor: "#3D7EBB",
-                padding: "20px",
+                paddingLeft: "70px",
+                paddingRight: "70px",
                 borderRadius: "20px",
                 justifyContent: "center",
                 alignItems: "center",
@@ -197,7 +203,7 @@ function SignUp() {
                 width="100%"
                 value={userInfo.email}
               />
-              <FormControl>
+              <FormControl style={{width:"100%"}}>
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
@@ -221,7 +227,7 @@ function SignUp() {
                   </FormLabel>
                   <FormControlLabel
                     value="UMKM"
-                    control={<Radio />}
+                    control={<Radio sx={{backgroundColor:"#fff"}} />}
                     label={
                       <span
                         style={{
@@ -237,7 +243,7 @@ function SignUp() {
                   />
                   <FormControlLabel
                     value="Investor"
-                    control={<Radio />}
+                    control={<Radio sx={{backgroundColor:"#fff"}} />}
                     label={
                       <span
                         style={{
@@ -260,6 +266,8 @@ function SignUp() {
                 handleChange={(e) => handlePassword(e.target.value)}
                 width="100%"
                 value={userInfo.password}
+                icon
+                suffix="true"
               />
               <Button
                 variant="contained"
@@ -279,6 +287,7 @@ function SignUp() {
           </Grid>
         </Grid>
       </Box>
+      </form>
     </Modal>
   );
 }

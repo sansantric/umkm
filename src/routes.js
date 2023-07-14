@@ -80,7 +80,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Start Campaign",
+    name: "Mulai Bisnis",
     key: "campaign",
     route: "/campaign",
     component: <Campaign />,
@@ -90,7 +90,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Start Investing",
+    name: "Mulai Investasi",
     key: "start-investing",
     route: "/start-investing",
     component: <Investing />,
@@ -102,7 +102,7 @@ const routes = [
     type: "collapse",
     name: "simulation",
     key: "simulation",
-    route: "/start-investing/simulation/:identifier",
+    route: "/start-investing/invest/:identifier",
     component: <Simulation />,
     noCollapse: true,
     subRoute: true,
@@ -191,7 +191,6 @@ const routes = [
   //   noCollapse: true,
   //   subRoute: false
   // },
-  { type: "title", title: "", key: "account-pages", subRoute: false },
   // {
   //   type: "collapse",
   //   name: "Settings",
@@ -202,36 +201,38 @@ const routes = [
   //   noCollapse: true,
   //   subRoute: false
   // },
-  {
-    type: "collapse",
-    name: "Log Out",
-    key: "logout",
-    route: "/sign-out",
-    icon: <Document size="12px" />,
-    component: <SignOut />,
-    noCollapse: true,
-    subRoute: false,
-    role: ["UMKM", "Investor"]
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Log Out",
+  //   key: "logout",
+  //   route: "/sign-out",
+  //   icon: <Document size="12px" />,
+  //   component: <SignOut />,
+  //   noCollapse: true,
+  //   subRoute: false,
+  //   role: ["UMKM", "Investor"]
+  // },
   {
     type: "collapse",
     name: "Admin",
     key: "admin",
-    route: "/wp-admin",
+    route: "/admin",
     icon: <Document size="12px" />,
     component:"",
     noCollapse: true,
-    subRoute: true
+    subRoute: true,
+    role: ["Admin"]
   },
   {
     type: "collapse",
     name: "Dashboard Admin",
     key: "dashboardAdmin",
-    route: "/wp-admin/dashboard",
+    route: "/admin/dashboard",
     icon: <Document size="12px" />,
     component: "",
     noCollapse: true,
-    subRoute: true
+    subRoute: true,
+    role: ["Admin"]
   },
 ];
 

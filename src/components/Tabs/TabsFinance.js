@@ -12,6 +12,7 @@ import TextArea from "components/Text/TextArea";
 import TextInput from "components/Text/TextInput";
 import FileInput from "components/Text/ButtonFIle";
 import CardCampaign from "components/Card/CardCampaign";
+import Card from "@mui/material/Card";
 
 import Dropdown from "components/Dropdown";
 import Button from "@mui/material/Button";
@@ -51,6 +52,9 @@ function a11yProps(index) {
 }
 
 export default function BasicTabs() {
+  const [statusCampign, setStatusCampaign] = React.useState();
+  const [statusPencairanModal, setStatusPencairanModal] = React.useState();
+  const [prosesPencairanModal, setProsesPencairanModal] = React.useState(false);
   const dispatch = useDispatch();
   const store = useSelector((store) => store.mainReducer);
   const [value, setValue] = React.useState(0);
@@ -62,6 +66,13 @@ export default function BasicTabs() {
   const [nominal, setNominal] = React.useState("");
   const [NamaRekening, setNamaRekening] = React.useState("");
   const [NomorRekening, setNomorRekening] = React.useState("");
+
+  const [pencairanModal, setPencairanModal] = React.useState({
+    ModalTerkumpul: "",
+    NamaPenerima: "",
+    BankPenerima: "",
+    NomorRekening: "",
+  });
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -92,41 +103,108 @@ export default function BasicTabs() {
 
     return ab;
   };
-  const submitCampaign = () => {
-    let token = localStorage.getItem("token");
-    const FormData = require("form-data");
-    let data = new FormData();
-    // const fs = require('fs');
-    // const imgBuffer = Buffer.from(image, 'base64')
-    // const file = dataURLtoFile(image)
-    data.append("judul", "a");
-    data.append("sub_judul", "asdasd");
-    data.append("harga", "asdasd");
-    data.append("kategori", "asdasd");
-    data.append("gambar", image);
+  const tabStyle = () => {
+    return {
+      fontWeight: "500",
+      fontSize: "0.9rem",
+      "&.Mui-selected": {
+        color: "#ffffff !important",
+      },
+      paddingLeft: "5rem",
+      paddingRight: "5rem",
+    };
+  };
 
-    let config = {
+  const submitPencairanModal = () => {
+    let token = localStorage.getItem("token");
+    var data = JSON.stringify({
+      nominal: statusCampign.total_funds,
+      nama_penerima: pencairanModal.NamaPenerima,
+      bank_penerima: pencairanModal.BankPenerima,
+      nomor_rekening: pencairanModal.NomorRekening,
+    });
+
+    var config = {
       method: "post",
-      url: "https://teman-umkm.website/api/add_post",
+      url: `https://api.temanumkm.site/api/funds/post/${statusCampign.id}`,
       headers: {
-        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
       data: data,
     };
 
-    axios
-      .request(config)
-      .then((response) => {
+    axios(config)
+      .then(function (response) {
+        dispatch({ type: "LOADING", value: false });
+        dispatch({ type: "MODALTYPE", value: "pencairanModal" });
+        dispatch({ type: "MODAL", value: true });
+        setTimeout(() => {
+          dispatch({ type: "MODAL", value: false });
+          window.location.reload(true);
+        }, 3000);
         console.log(JSON.stringify(response.data));
       })
-      .catch((error) => {
+      .catch(function (error) {
+        dispatch({ type: "LOADING", value: false });
+        dispatch({ type: "ALERT", value: true });
+        dispatch({ type: "STATUS", value: "error" });
+        dispatch({ type: "MESSAGE", value: "Pencairan Modal Failed" });
         console.log(error);
       });
   };
+
   React.useEffect(() => {
-    console.log("USER", user)
-    // fetch data
+    let token = localStorage.getItem("token");
+    const fetchStatusPencairanModal = () => {
+      var data = JSON.stringify({});
+      var config = {
+        method: "get",
+        url: "https://api.temanumkm.site/api/funding/listfunds",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      axios(config)
+        .then(function (response) {
+          setStatusPencairanModal(response.data.message);
+          // if (response.data.message.a.is_cair == 0) {
+          //   setProsesPencairanModal(true);
+          // }
+          // console.log(response.data.message.a.is_cair == 0);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    };
+    const fetchCampign = async () => {
+      let data = JSON.stringify({});
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: "https://api.temanumkm.site/api/funds/getByStatus",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        data: data,
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          setStatusCampaign(response.data.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    fetchCampign();
+    fetchStatusPencairanModal();
   }, []);
   return (
     <Box sx={{ width: "100%" }}>
@@ -134,188 +212,270 @@ export default function BasicTabs() {
         <Tabs
           value={value}
           onChange={handleChange}
-          aria-label="basic tabs example"
-          sx={{ background: "#F0F0F0", borderRadius: "30px", height: "50px", width: "50%" }}
+          sx={{
+            // width: "50%",
+            background: "#F0F0F0",
+            borderRadius: "30px",
+            height: "50px",
+            // marginLeft: "24px",
+            // marginRight: "24px",
+            boxShadow: "5px 5px 5px rgba(0,0,0,0.1)",
+          }}
           TabIndicatorProps={{
             style: {
               background: "#3D7EBB",
               borderRadius: "30px",
+              color: "#fff !important",
             },
           }}
         >
-          <Tab label={user.tipe_akun == "UMKM" ? "Pencairan Modal" : "Pencairan Profit"} {...a11yProps(0)} />
-          <Tab label="Status" {...a11yProps(1)} />
+          <Tab
+            label={user.tipe_akun == "UMKM" ? "Pencairan Modal" : "Pencairan Profit"}
+            {...a11yProps(0)}
+            sx={tabStyle}
+          />
+          <Tab label="Status" {...a11yProps(1)} sx={tabStyle} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <Paper style={{borderRadius:"20px"}}>
-          <Grid container>
-            <Grid
-              item
-              xs={1}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            ></Grid>
-            <Grid item xs={11} style={{ width: "100%" }}>
-              <TextInput placeholder="Nominal" width="90%" disable={true} value={`Rp. 9.999.999`} />
-              <Dropdown
-                list={[
-                  {
-                    value: 1,
-                    name: "Bank BCA",
-                  },
-                  {
-                    value: 2,
-                    name: "Bank Mandiri",
-                  },
-                ]}
-              />
-
-              <TextInput
-                placeholder="Nama Rekening Penerima"
-                handleChange={(e) => setNamaRekening(e.target.value)}
-                width="90%"
-                value={NamaRekening}
-              />
-              <TextInput
-                placeholder="Nomor Rekening Penerima"
-                handleChange={(e) => setNomorRekening(e.target.value)}
-                width="90%"
-                value={NomorRekening}
-              />
+        {statusCampign && statusCampign.is_cair == null && (
+          <Card
+            sx={{
+              display: "flex",
+              padding: "20px",
+              marginTop: "20px",
+              marginBottom: "20px",
+              boxShadow: "5px 5px 5px rgba(0,0,0,0.1)",
+              border: "1px solid rgba(0,0,0,0.1)",
+              backgroundColor: "rgba(0,0,0,0.05)",
+            }}
+          >
+            <Grid container>
+              <Grid item xs={3} style={{ padding: "20px" }}>
+                <img
+                  src={`https://temanumkm.site/storage/${statusCampign.image}`}
+                  style={{ width: "90%" }}
+                />
+              </Grid>
+              <Grid
+                container
+                item
+                xs={9}
+                sx={{ flexDirection: "column", padding: "20px", paddingLeft: "3rem" }}
+              >
+                <Typography variant="h3" sx={{ fontWeight: "bold" }}>
+                  {statusCampign.title}
+                </Typography>
+                <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}>
+                  STATUS: {statusCampign.status == 0 && "Sedang di Verifikasi Admin"}
+                  {statusCampign.status == 1 && "Sedang Berjalan"}
+                </Typography>
+                <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}>
+                  KEUNTUNGAN: {statusCampign.profit}%
+                </Typography>
+                <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}>
+                  Target Modal: Rp.
+                  {statusCampign.target_funds.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                </Typography>
+                {/* <br></br> */}
+                <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}>
+                  Kategori Bisnis: {statusCampign.kategori}
+                </Typography>
+                <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}>
+                  Tanggal Selesai: {statusCampign.end_date}
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid
-              item
-              xs={12}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+          </Card>
+        )}
+        {statusCampign && statusCampign.is_cair == null && (
+          <Grid
+            item
+            xs={12}
+            sx={{
+              padding: "50px",
+              marginLeft: "20%",
+              marginRight: "20%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <TextInput
+              label="Modal Terkumpul"
+              handleChange={(e) =>
+                setPencairanModal({
+                  ...pencairanModal,
+                  ModalTerkumpul: e.target.value
+                    .replace(/[^0-9]/g, "")
+                    .toString()
+                    .replaceAll(".", ""),
+                })
+              }
+              disable
+              width="100%"
+              prefix="Rp."
+              value={statusCampign.total_funds.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+            />
+            <TextInput
+              label="Nama Penerima"
+              handleChange={(e) =>
+                setPencairanModal({
+                  ...pencairanModal,
+                  NamaPenerima: e.target.value,
+                })
+              }
+              width="100%"
+              value={pencairanModal.NamaPenerima}
+            />
+            <TextInput
+              label="Bank Penerima"
+              handleChange={(e) =>
+                setPencairanModal({
+                  ...pencairanModal,
+                  BankPenerima: e.target.innerHTML,
+                })
+              }
+              width="100%"
+              value={pencairanModal.BankPenerima}
+              list={[
+                {
+                  value: 0,
+                  name: "Pilih Rekening",
+                },
+                {
+                  value: 1,
+                  name: "BCA",
+                },
+                {
+                  value: 2,
+                  name: "Mandiri",
+                },
+                {
+                  value: 3,
+                  name: "BNI",
+                },
+                {
+                  value: 4,
+                  name: "BRI",
+                },
+              ]}
+            />
+            <TextInput
+              label="Nomor Rekening"
+              handleChange={(e) =>
+                setPencairanModal({
+                  ...pencairanModal,
+                  NomorRekening: e.target.value,
+                })
+              }
+              width="100%"
+              value={pencairanModal.NomorRekening}
+            />
+            <>
               <Button
                 variant="contained"
+                disabled={
+                  parseInt(statusCampign.total_funds) < parseInt(statusCampign.target_funds)
+                }
                 style={{
                   backgroundColor: "#3D7EBB",
-                  margin: "10px",
+                  marginTop: "20px",
                   width: "50%",
                   borderRadius: "50px",
                 }}
-                // onClick={() => submitCampaign()}
+                onClick={() => submitPencairanModal()}
               >
                 Request Pencairan Modal
               </Button>
-            </Grid>
+            </>
           </Grid>
-        </Paper>
+        )}
+        {statusCampign && statusCampign.is_cair == 0 && (
+          <div style={{display:"flex", justifyContent:"center"}} >
+          <Typography>Pencairan Modal Sedang Di Proses</Typography>
+          </div>
+        )}
+        
+        {statusCampign && statusCampign.is_cair == 1 && (
+          <div style={{display:"flex", justifyContent:"center"}} >
+          <Typography>Belum Ada Pencairan Modal</Typography>
+          </div>
+        )}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Paper
-          style={{ margin: "10px", boxShadow: "5px 5px 5px rgba(0,0,0,0.2)", borderRadius: "20px" }}
-        >
-          <Grid container>
-            <Grid
-              item
-              xs={4}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <img
-                src={factory}
-                style={{
-                  width: "90%",
-                  boxShadow: "5px 5px 5px rgba(0,0,0,0.5)",
-                  margin: "20px",
-                  borderRadius: "10px",
-                  border: "1px solid black",
-                }}
-              />
-            </Grid>
-            <Grid item xs={8} style={{ width: "100%", padding: "30px" }}>
-              <Typography variant="h3"> Segar Bugar </Typography>
-              <Typography variant="h6"> Food & Beverages </Typography>
-              <Typography variant="h6">
-                Didirikan pada tahun 2020 dan telah memiliki total 16 cabang di seluruh indonesia.
-              </Typography>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  alignItems: "center",
-                  paddingTop: "50px",
-                  paddingBottom: "20px",
-                }}
-              >
-                <Typography variant="h6">Nominal Penarikan Investasi</Typography>
-                <Typography variant="h4">Rp. 20.000.000,00</Typography>
-              </div>
-            </Grid>
-            <Grid
-              item
-              xs={5}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Typography variant="h4"> Status: </Typography>
-            </Grid>
-            <Grid
-              item
-              xs={6}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: "#fff",
-                  color: "blue",
-                  margin: "10px",
-                  width: "100%",
-                }}
-                disabled
-              >
-                Telah Disetujui
-              </Button>
-            </Grid>
-            <Grid item xs={1} />
-
-            <Grid item xs={12} style={{display:"flex", flexDirection:"column", justifyContent:"center", alignContent:"center", alignItems:"center"}} >
-              
-            <Typography variant="h6">Silahkan cek rekening anda</Typography>
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: "#3D7EBB",
-                  margin: "10px",
-                  width: "50%",
-                  borderRadius: "50px",
-                }}
-                // onClick={() => submitCampaign()}
-              >
-                Telah Diterima
-              </Button>
-            </Grid>
-          </Grid>
-        </Paper>
+        {statusPencairanModal &&
+          statusPencairanModal.map(
+            (item) =>
+              item.is_cair != null && (
+                <Card
+                  key={item.id}
+                  sx={{
+                    display: "flex",
+                    padding: "20px",
+                    marginTop: "20px",
+                    marginBottom: "20px",
+                    boxShadow: "5px 5px 5px rgba(0,0,0,0.1)",
+                    border: "1px solid rgba(0,0,0,0.1)",
+                    backgroundColor: "rgba(0,0,0,0.05)",
+                  }}
+                >
+                  <Grid container>
+                    <Grid
+                      item
+                      xs={4}
+                      style={{ padding: "20px", justifyItems: "center", display: "flex" }}
+                    >
+                      <img
+                        src={`https://temanumkm.site/storage/${item.image}`}
+                        style={{ width: "100%" }}
+                      />
+                    </Grid>
+                    <Grid
+                      container
+                      item
+                      xs={8}
+                      sx={{ flexDirection: "column", padding: "20px", paddingLeft: "3rem" }}
+                    >
+                      <Typography variant="h3" sx={{}}>
+                        {item.title}
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}
+                      >
+                        Status: {item.is_cair == 0 && "Sedang di Verifikasi Admin"}
+                        {item.is_cair == 1 && "Berhasil"}
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}
+                      >
+                        Penarikan:{" "}
+                        {item.total_funds.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}
+                      >
+                        Target Modal:
+                        {item.target_funds.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                      </Typography>
+                      <br />
+                      <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)" }}>
+                        Nama Penerima: {item[1]}
+                      </Typography>
+                      <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)" }}>
+                        Bank Penerima: {item[2]}
+                      </Typography>
+                      <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)" }}>
+                        Nomor Rekening Penerima: {item[0]}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Card>
+              )
+          )}
       </TabPanel>
     </Box>
   );

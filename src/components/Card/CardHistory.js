@@ -22,6 +22,7 @@ export default function CardHistory(props) {
   const store = useSelector((store) => store.mainReducer);
   const { posts } = props;
   let harga = posts.harga.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  let image = posts.gambar.split("/");
   const handleDownload = () => {
     fetch(pdf).then((response) => {
       response.blob().then((blob) => {
@@ -36,37 +37,49 @@ export default function CardHistory(props) {
     });
   };
   return (
-    <Card sx={{ display: "flex", margin: "10px" }}>
+    <Card
+      sx={{
+        display: "flex",
+        padding: "20px",
+        marginTop: "20px",
+        marginBottom: "20px",
+        boxShadow: "5px 5px 5px rgba(0,0,0,0.1)",
+        border: "1px solid rgba(0,0,0,0.1)",
+        backgroundColor: "rgba(0,0,0,0.05)",
+      }}
+    >
       <Grid container>
-        <Grid item xs={3} style={{ padding: "20px" }}>
-          <img src={posts.gambar} style={{ width: "250px" }} />
+        <Grid item xs={2}>
+          <img 
+            src={`https://temanumkm.site/storage/${image[image.length - 1]}`}
+            style={{ width: "100%", borderRadius:"1rem" }} />
         </Grid>
         <Grid
           container
           item
-          xs={6}
-          sx={{ flexDirection: "column", justifyContent: "space-around", padding: "20px" }}
+          xs={10}
+          sx={{ flexDirection: "column", paddingLeft: "3rem", justifyContent:"space-between" }}
         >
-          <Typography variant="h3">{posts.judul}</Typography>
-          <Typography variant="h5">Rp. {harga}</Typography>
-          <div style={{display: "flex", flexDirection:"row", justifyContent:"space-around", alignContent:"center", alignItems:"center"}} >
-            <Typography variant="h5">Status:</Typography>
-            <Typography variant="h5" style={{padding:"7px", backgroundColor:"#3D7EBB", color:"#fff", borderRadius:"10px"}} >Berhasil</Typography>
+          <div>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            {posts.judul}
+          </Typography>
+          <Typography variant="h6" sx={{ color: "rgba(0,0,0,0.4)", fontWeight: "bold" }}>
+            STATUS: BERHASIL
+          </Typography>
+          <Typography variant="subtitle2" sx={{ marginTop: "10px", marginBottom: "10px" }}>
+            {posts.sub_judul}
+          </Typography>
           </div>
-        </Grid>
-
-        <Grid item xs={3}>
           <Button
             variant="contained"
             color="primary"
-            size="large"
+            size="small"
             startIcon={<DownloadIcon />}
             style={{
-              borderRadius: "10px",
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
+              borderRadius: "50px",
+              width: "30%",
+              boxShadow: "5px 5px 5px rgba(0,0,0,0.1)",
             }}
             onClick={() => handleDownload()}
           >

@@ -12,14 +12,20 @@ const initialState = {
   isLoading: false,
   isAlert: false,
   isModal: false,
+  ModalConfirm: false,
   status: "",
   message: "",
   login: false,
-  user: {},
+  user: false,
   cart: [],
   modalType: "",
   riwayat: "",
   image: "",
+  post: {
+    investasi: [],
+    bisnis: [],
+    history: [],
+  },
 };
 
 export const mainReducer = (state = initialState, action) => {
@@ -63,6 +69,9 @@ export const mainReducer = (state = initialState, action) => {
     case "MODAL": {
       return { ...state, isModal: action.value };
     }
+    case "MODAL_CONFIRM": {
+      return { ...state, ModalConfirm: action.value };
+    }
     case "STATUS": {
       return { ...state, status: action.value };
     }
@@ -78,6 +87,11 @@ export const mainReducer = (state = initialState, action) => {
     case "CART": {
       return { ...state, cart: [...state.cart, action.value] };
     }
+    case "DELETE_CART": {
+      let filteredArray = state.cart.filter(function(e) { return e !== action.value })
+      console.log("DELETE_CART",filteredArray)
+      return { ...state, cart: filteredArray };
+    }
     case "MODALTYPE": {
       return { ...state, modalType: action.value };
     }
@@ -89,6 +103,30 @@ export const mainReducer = (state = initialState, action) => {
     }
     case "RESET_CART": {
       return { ...state, cart: [] };
+    }
+    case "POST": {
+      let bisnis = [];
+      let investasi = [];
+      action.value.map((items, i) => {
+        return items.kategori == "bisnis" ? bisnis.push(items) : investasi.push(items);
+      });
+      return {
+        ...state,
+        post: {
+          ...state.post,
+          investasi: investasi,
+          bisnis: bisnis,
+        },
+      };
+    }
+    case "POST_HISTORY": {
+      return {
+        ...state,
+        post: {
+          ...state.post,
+          history: action.value,
+        },
+      };
     }
     case "RESET": {
       return { initialState };

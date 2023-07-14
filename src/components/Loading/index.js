@@ -18,6 +18,7 @@ export default function Loading() {
       open={isLoading}
       onClose={handleLoading}
       style={{display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      disableAutoFocus
     >
     <Box>
       <CircularProgress style={{color: 'white'}} size={100} />
